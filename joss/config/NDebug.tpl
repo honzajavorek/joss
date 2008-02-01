@@ -24,7 +24,7 @@
  * @author     David Grudl
  * @copyright  Copyright (c) 2004, 2008 David Grudl
  * @package    Nette
- * @version    $Revision: 6 $ $Date: 2008-01-30 11:58:08 +0100 (st, 30 I 2008) $
+ * @version    $Revision$ $Date$
  */
 
 /*

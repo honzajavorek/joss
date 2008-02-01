@@ -40,7 +40,7 @@
  * @author     David Grudl
  * @copyright  Copyright (c) 2004, 2008 David Grudl
  * @package    Nette::Web
- * @version    $Revision: 101 $ $Date: 2008-01-08 07:43:13 +0100 (út, 08 I 2008) $
+ * @version    $Revision$ $Date$
  * @property   mixed element's attributes
  */
 class NHtml extends NObject implements ArrayAccess, Countable, IteratorAggregate
