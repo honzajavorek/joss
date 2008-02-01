@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * Joss framework & content management system.
+ *
+ * Created ${date}.
+ *
+ * @author    Jan (Honza) Javorek aka Littlemaple http://www.javorek.net
+ * @copyright Copyright (c) ${year} Jan Javorek
+ * @package   Joss
+ * @link      http://work.javorek.net/joss
+ * @license   GNU GENERAL PUBLIC LICENSE version 2
+ */
+
+
+
+/**
+ * DESCRIPTION.
+ *
+ * @author     Jan (Honza) Javorek aka Littlemaple <honza@javorek.net>
+ * @copyright  Copyright (c) ${year} Jan Javorek
+ * @package    Joss
+ * @version    $$Revision$$ ($$Date$$, $$Author$$)
+ */
+class CLASS {
