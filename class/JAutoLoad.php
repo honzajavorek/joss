@@ -27,7 +27,7 @@ function __autoload($class) { JAutoload::load($class); }
  * @author     Jan (Honza) Javorek aka Littlemaple http://www.javorek.net
  * @copyright  Copyright (c) 2008 Jan Javorek
  * @package    Joss
- * @version    $Revision: 4 $ ($Date: 2008-02-01 04:34:45 +0100 $, $Author: jan.javorek $)
+ * @version    $Revision$ ($Date$, $Author$)
  */
 final class JAutoLoad {
 	
