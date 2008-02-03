@@ -24,7 +24,7 @@
  * @author     David Grudl
  * @copyright  Copyright (c) 2004, 2008 David Grudl
  * @package    Nette
- * @version    $Revision$ $Date$
+ * @version    $Revision: 8 $ $Date: 2008-02-01 02:29:10 +0100 (pá, 01 II 2008) $
  */
 
 /*
@@ -49,11 +49,11 @@ if (!headers_sent()) {
     /* <![CDATA[ */
         body {
             font-family: Verdana, sans-serif;
-            font-size: 82%;
+            font-size: 78%;
             background: white;
             color: #333;
             line-height: 1.5;
-            margin: 0;
+            margin: 0 0 2em;
             padding: 0;
         }
 
@@ -73,7 +73,7 @@ if (!headers_sent()) {
 
         a {
             text-decoration: none;
-            color: #4197E3;
+            color: #5B6F00;<?php // NOTE changed! not original ?>
         }
 
         a span {
@@ -92,12 +92,16 @@ if (!headers_sent()) {
             background: #ffffcc;
             padding: .4em .7em;
             border: 1px dotted silver;
+            font-family: monospace;
         }
 
-        pre.dump {
+        table, pre, x:-moz-any-link { font-size: 115%; }
+
+        table pre {
             padding: 0;
             margin: 0;
             border: none;
+            font-size: 100%;
         }
 
         pre.dump span {
@@ -217,25 +221,19 @@ if (!headers_sent()) {
             &lt;PHP inner-code&gt;
         <?php endif ?>
 
-        &mdash;
+
 
         <?php
         $hasSource = isset($row['file']) && is_readable($row['file']);
         $hasArgs = isset($row['args']) && count($row['args']) > 0;
-
-        if (isset($row['class'])) {
-            echo $row['class'] . $row['type'];
-        }
-
-        echo $row['function'];
         ?>
 
+        <?php if ($hasSource): ?><a href="#" onclick="return !toggle(this, 'src<?php echo $key ?>')">source <span>&#x25b6;</span></a> &nbsp; <?php endif ?>
+
+        <?php if (isset($row['class'])) echo $row['class'] . $row['type'] ?>
+        <?php echo $row['function'] ?>
 
         (<?php if ($hasArgs): ?><a href="#" onclick="return !toggle(this, 'args<?php echo $key ?>')">arguments <span>&#x25b6;</span></a><?php endif ?>)
-
-        &nbsp;
-
-        <?php if ($hasSource): ?><a href="#" onclick="return !toggle(this, 'src<?php echo $key ?>')">source <span>&#x25b6;</span></a><?php endif ?>
         </p>
 
         <?php if ($hasArgs): ?>
@@ -249,8 +247,8 @@ if (!headers_sent()) {
                 $params = array();
             }
             foreach ($row['args'] as $k => $v) {
-                $name = isset($params[$k]) ? '$' . $params[$k]->name : "#$k";
-                echo '<tr><td>', htmlspecialchars($name), '</td><td>', self::dump($v, TRUE), '</td></tr>';
+                echo '<tr><td>', (isset($params[$k]) ? '$' . $params[$k]->name : "#$k"), '</td>';
+                echo '<td>', self::filter(self::dump($v, TRUE), isset($params[$k]) ? $params[$k]->name : NULL), '</td></tr>';
             }
             ?>
             </table>
@@ -293,7 +291,9 @@ if (!headers_sent()) {
         <div id="context" class="hidden inner">
             <table>
             <?php
-            foreach ($context as $k => $v) echo '<tr><td>$', htmlspecialchars($k), '</td><td>', self::dump($v, TRUE), '</td></tr>';
+            foreach ($context as $k => $v) {
+                echo '<tr><td>$', htmlspecialchars($k), '</td><td>', self::filter(self::dump($v, TRUE), $k), '</td></tr>';
+            }
             ?>
             </table>
         </div>
@@ -357,7 +357,7 @@ if (!headers_sent()) {
             foreach (headers_list() as $s) echo htmlspecialchars($s), '<br />';
             ?></pre>
             <?php else: ?>
-            <p>No headers...</p>
+            <p><i>no headers</i></p>
             <?php endif ?>
         </div>
     </div>
@@ -365,8 +365,9 @@ if (!headers_sent()) {
 
     <ul>
         <li>PHP version <?php echo PHP_VERSION ?></li>
-        <li><?php echo $_SERVER['SERVER_SOFTWARE'] ?></li>
-        <li>Nette version 0.7</li>
+        <?php if (isset($_SERVER['SERVER_SOFTWARE'])): ?><li><?php echo $_SERVER['SERVER_SOFTWARE'] ?></li><?php endif ?>
+        <li>Joss framework<?php // NOTE changed! not original ?></li>
+        <li>Report generated at <?php echo @strftime('%c') ?></li>
     </ul>
 
 </body>

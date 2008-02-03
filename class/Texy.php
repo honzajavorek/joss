@@ -3,7 +3,7 @@
  * Texy! - web text markup-language
  * --------------------------------
  *
- * Copyright (c) 2004, 2007 David Grudl aka -dgx- (http://www.dgx.cz)
+ * Copyright (c) 2004, 2008 David Grudl aka -dgx- (http://www.dgx.cz)
  *
  * This source file is subject to the GNU GPL license that is bundled
  * with this package in the file license.txt.
@@ -11,14 +11,14 @@
  * For more information please see http://texy.info/
  *
  * @author     David Grudl
- * @copyright  Copyright (c) 2004, 2007 David Grudl
+ * @copyright  Copyright (c) 2004, 2008 David Grudl
  * @license    GNU GENERAL PUBLIC LICENSE version 2 or 3
- * @version    2.0 BETA 2 (Revision: 195, Date: 2007/12/11 03:52:04)
+ * @version    2.0 BETA 2 (Revision: 201, Date: 2008/02/01 03:00:29)
  * @package    Texy
  * @link       http://texy.info/
  */
 
-define('TEXY_VERSION','2.0 BETA 2 (Revision: 195, Date: 2007/12/11 03:52:04)');if(!class_exists('NObject',FALSE)){abstract
+define('TEXY_VERSION','2.0 BETA 2 (Revision: 201, Date: 2008/02/01 03:00:29)');if(!class_exists('NObject',FALSE)){abstract
 class
 NObject{final
 public
@@ -33,36 +33,40 @@ ReflectionObject($this);}protected
 function
 __call($name,$args){if($name===''){throw
 new
-BadMethodCallException("Call to method without name");}$cl=$class=get_class($this);do{if(function_exists($nm=$cl.'_prototype_'.$name)){array_unshift($args,$this);return
+MemberAccessException("Call to method without name.");}$class=get_class($this);if(self::hasEvent($class,$name)){$list=$this->$name;if(is_array($list)||$list
+instanceof
+Traversable){foreach($list
+as$handler){call_user_func_array($handler,$args);}}return;}$cl=$class;do{if(function_exists($nm=$cl.'_prototype_'.$name)){array_unshift($args,$this);return
 call_user_func_array($nm,$args);}}while($cl=get_parent_class($cl));throw
 new
-BadMethodCallException("Call to undefined method $class::$name()");}protected
+MemberAccessException("Call to undefined method $class::$name().");}protected
 function&__get($name){if($name===''){throw
 new
-LogicException("Cannot read an property without name");}$class=get_class($this);$m='get'.$name;if(self::hasAccessor($class,$m)){$val=$this->$m();return$val;}else{throw
+MemberAccessException("Cannot read an property without name.");}$class=get_class($this);$m='get'.$name;if(self::hasAccessor($class,$m)){$val=$this->$m();return$val;}else{throw
 new
-LogicException("Cannot read an undeclared property $class::\$$name");}}protected
+MemberAccessException("Cannot read an undeclared property $class::\$$name.");}}protected
 function
 __set($name,$value){if($name===''){throw
 new
-LogicException('Cannot assign to an property without name');}$class=get_class($this);if(self::hasAccessor($class,'get'.$name)){$m='set'.$name;if(self::hasAccessor($class,$m)){$this->$m($value);}else{throw
+MemberAccessException('Cannot assign to an property without name.');}$class=get_class($this);if(self::hasAccessor($class,'get'.$name)){$m='set'.$name;if(self::hasAccessor($class,$m)){$this->$m($value);}else{throw
 new
-LogicException("Cannot assign to a read-only property $class::\$$name");}}else{throw
+MemberAccessException("Cannot assign to a read-only property $class::\$$name.");}}else{throw
 new
-LogicException("Cannot assign to an undeclared property $class::\$$name");}}protected
+MemberAccessException("Cannot assign to an undeclared property $class::\$$name.");}}protected
 function
 __isset($name){return$name!==''&&self::hasAccessor(get_class($this),'get'.$name);}protected
 function
 __unset($name){$class=get_class($this);throw
 new
-LogicException("Cannot unset an property $class::\$$name");}private
+MemberAccessException("Cannot unset an property $class::\$$name.");}private
 static
 function
 hasAccessor($c,$m){static$cache;if(!isset($cache[$c])){$cache[$c]=array_flip(get_class_methods($c));}$m[3]=$m[3]&"\xDF";return
-isset($cache[$c][$m]);}}}define('TEXY_ALL',TRUE);define('TEXY_NONE',FALSE);define('TEXY_CONTENT_MARKUP',"\x17");define('TEXY_CONTENT_REPLACED',"\x16");define('TEXY_CONTENT_TEXTUAL',"\x15");define('TEXY_CONTENT_BLOCK',"\x14");class
-TexyException
-extends
-Exception{}class
+isset($cache[$c][$m]);}private
+static
+function
+hasEvent($c,$m){return
+preg_match('#^on[A-Z]#',$m)&&property_exists($c,$m);}}}define('TEXY_ALL',TRUE);define('TEXY_NONE',FALSE);define('TEXY_CONTENT_MARKUP',"\x17");define('TEXY_CONTENT_REPLACED',"\x16");define('TEXY_CONTENT_TEXTUAL',"\x15");define('TEXY_CONTENT_BLOCK',"\x14");class
 Texy
 extends
 NObject{const
@@ -112,7 +116,7 @@ registerPostLine($handler,$name){if(!isset($this->allowed[$name]))$this->allowed
 function
 process($text,$singleLine=FALSE){if($this->processing){throw
 new
-TexyException('Processing is in progress yet.');}$this->marks=array();$this->processing=TRUE;if(is_array($this->allowedClasses))$this->_classes=array_flip($this->allowedClasses);else$this->_classes=$this->allowedClasses;if(is_array($this->allowedStyles))$this->_styles=array_flip($this->allowedStyles);else$this->_styles=$this->allowedStyles;$text=TexyUtf::toUtf($text,$this->encoding);$text=self::normalize($text);$this->tabWidth=max(1,(int)$this->tabWidth);while(strpos($text,"\t")!==FALSE){$text=preg_replace_callback('#^(.*)\t#mU',array($this,'tabCb'),$text);}$this->invokeHandlers('beforeParse',array($this,&$text,$singleLine));$this->_linePatterns=$this->linePatterns;$this->_blockPatterns=$this->blockPatterns;foreach($this->_linePatterns
+InvalidStateException('Processing is in progress yet.');}$this->marks=array();$this->processing=TRUE;if(is_array($this->allowedClasses))$this->_classes=array_flip($this->allowedClasses);else$this->_classes=$this->allowedClasses;if(is_array($this->allowedStyles))$this->_styles=array_flip($this->allowedStyles);else$this->_styles=$this->allowedStyles;$text=TexyUtf::toUtf($text,$this->encoding);$text=self::normalize($text);$this->tabWidth=max(1,(int)$this->tabWidth);while(strpos($text,"\t")!==FALSE){$text=preg_replace_callback('#^(.*)\t#mU',array($this,'tabCb'),$text);}$this->invokeHandlers('beforeParse',array($this,&$text,$singleLine));$this->_linePatterns=$this->linePatterns;$this->_blockPatterns=$this->blockPatterns;foreach($this->_linePatterns
 as$name=>$foo){if(empty($this->allowed[$name]))unset($this->_linePatterns[$name]);}foreach($this->_blockPatterns
 as$name=>$foo){if(empty($this->allowed[$name]))unset($this->_blockPatterns[$name]);}$this->DOM=TexyHtml::el();if($singleLine){$this->DOM->parseLine($this,$text);}else{$this->DOM->parseBlock($this,$text);}$this->invokeHandlers('afterParse',array($this,$this->DOM,$singleLine));$html=$this->DOM->toHtml($this);if(self::$advertisingNotice){$html.="\n<!-- by Texy2! -->";if(self::$advertisingNotice==='once'){self::$advertisingNotice=FALSE;}}$this->processing=FALSE;return
 TexyUtf::utf2html($html,$this->encoding);}public
@@ -122,7 +126,7 @@ TexyUtf::utf2html($text,$this->encoding);}public
 function
 toText(){if(!$this->DOM){throw
 new
-TexyException('Call $texy->process() first.');}return
+InvalidStateException('Call $texy->process() first.');}return
 TexyUtf::utfTo($this->DOM->toText($this),$this->encoding);}final
 public
 function
@@ -138,7 +142,7 @@ public
 function
 addHandler($event,$callback){if(!is_callable($callback)){throw
 new
-TexyException("Invalid callback");}$this->handlers[$event][]=$callback;}final
+InvalidArgumentException("Invalid callback.");}$this->handlers[$event][]=$callback;}final
 public
 function
 invokeAroundHandlers($event,$parser,$args){if(!isset($this->handlers[$event]))return
@@ -219,7 +223,7 @@ public
 function
 __clone(){throw
 new
-TexyException("Clone is not supported");}}define('TEXY_CHAR','A-Za-z\x{C0}-\x{2FF}\x{370}-\x{1EFF}');define('TEXY_MARK',"\x14-\x1F");define('TEXY_MODIFIER','(?: *(?<= |^)\\.((?:\\([^)\\n]+\\)|\\[[^\\]\\n]+\\]|\\{[^}\\n]+\\}){1,3}?))');define('TEXY_MODIFIER_H','(?: *(?<= |^)\\.((?:\\([^)\\n]+\\)|\\[[^\\]\\n]+\\]|\\{[^}\\n]+\\}|<>|>|=|<){1,4}?))');define('TEXY_MODIFIER_HV','(?: *(?<= |^)\\.((?:\\([^)\\n]+\\)|\\[[^\\]\\n]+\\]|\\{[^}\\n]+\\}|<>|>|=|<|\\^|\\-|\\_){1,5}?))');define('TEXY_IMAGE','\[\*([^\n'.TEXY_MARK.']+)'.TEXY_MODIFIER.'? *(\*|>|<)\]');define('TEXY_LINK_URL','(?:\[[^\]\n]+\]|(?!\[)[^\s'.TEXY_MARK.']*?[^:);,.!?\s'.TEXY_MARK.'])');define('TEXY_LINK','(?::('.TEXY_LINK_URL.'))');define('TEXY_LINK_N','(?::('.TEXY_LINK_URL.'|:))');define('TEXY_EMAIL','[a-z0-9.+_-]{1,64}@[a-z0-9.+_-]{1,252}\.[a-z]{2,6}');define('TEXY_URLSCHEME','[a-z][a-z0-9+.-]*:');class
+NotSupportedException('Clone is not supported.');}}define('TEXY_CHAR','A-Za-z\x{C0}-\x{2FF}\x{370}-\x{1EFF}');define('TEXY_MARK',"\x14-\x1F");define('TEXY_MODIFIER','(?: *(?<= |^)\\.((?:\\([^)\\n]+\\)|\\[[^\\]\\n]+\\]|\\{[^}\\n]+\\}){1,3}?))');define('TEXY_MODIFIER_H','(?: *(?<= |^)\\.((?:\\([^)\\n]+\\)|\\[[^\\]\\n]+\\]|\\{[^}\\n]+\\}|<>|>|=|<){1,4}?))');define('TEXY_MODIFIER_HV','(?: *(?<= |^)\\.((?:\\([^)\\n]+\\)|\\[[^\\]\\n]+\\]|\\{[^}\\n]+\\}|<>|>|=|<|\\^|\\-|\\_){1,5}?))');define('TEXY_IMAGE','\[\*([^\n'.TEXY_MARK.']+)'.TEXY_MODIFIER.'? *(\*|>|<)\]');define('TEXY_LINK_URL','(?:\[[^\]\n]+\]|(?!\[)[^\s'.TEXY_MARK.']*?[^:);,.!?\s'.TEXY_MARK.'])');define('TEXY_LINK','(?::('.TEXY_LINK_URL.'))');define('TEXY_LINK_N','(?::('.TEXY_LINK_URL.'|:))');define('TEXY_EMAIL','[a-z0-9.+_-]{1,64}@[a-z0-9.+_-]{1,252}\.[a-z]{2,6}');define('TEXY_URLSCHEME','[a-z][a-z0-9+.-]*:');class
 TexyHtml
 extends
 NObject
@@ -239,7 +243,7 @@ public
 function
 setName($name,$empty=NULL){if($name!==NULL&&!is_string($name)){throw
 new
-TexyException('Name must be string or NULL');}$this->name=$name;$this->isEmpty=$empty===NULL?isset(self::$emptyElements[$name]):(bool)$empty;return$this;}final
+InvalidArgumentException("Name must be string or NULL.");}$this->name=$name;$this->isEmpty=$empty===NULL?isset(self::$emptyElements[$name]):(bool)$empty;return$this;}final
 public
 function
 getName(){return$this->name;}final
@@ -253,12 +257,12 @@ public
 function&__get($name){return$this->attrs[$name];}final
 public
 function
-href($path,$params=NULL){if($params){$query=http_build_query($params,NULL,'&');if($query!=='')$path.='?'.$query;}$this->attrs['href']=$path;return$this;}final
+href($path,$query=NULL){if($query){$query=http_build_query($query,NULL,'&');if($query!=='')$path.='?'.$query;}$this->attrs['href']=$path;return$this;}final
 public
 function
 setText($text){if(is_scalar($text)){$this->children=array($text);}elseif($text!==NULL){throw
 new
-TexyException('Content must be scalar');}return$this;}final
+InvalidArgumentException('Content must be scalar.');}return$this;}final
 public
 function
 getText(){$s='';foreach($this->children
@@ -276,9 +280,9 @@ insert($index,$child,$replace=FALSE){if($child
 instanceof
 TexyHtml){if($child->parent!==NULL){throw
 new
-TexyException('Child node already has parent');}$child->parent=$this;}elseif(!is_string($child)){throw
+InvalidStateException('Child node already has parent.');}$child->parent=$this;}elseif(!is_string($child)){throw
 new
-TexyException('Child node must be scalar or TexyHtml object');}if($index===NULL){$this->children[]=$child;}else{array_splice($this->children,(int)$index,$replace?1:0,array($child));}return$this;}final
+InvalidArgumentException('Child node must be scalar or TexyHtml object.');}if($index===NULL){$this->children[]=$child;}else{array_splice($this->children,(int)$index,$replace?1:0,array($child));}return$this;}final
 public
 function
 offsetSet($index,$child){$this->insert($index,$child,TRUE);}final
@@ -472,9 +476,9 @@ __construct($handlers,TexyParser$parser,$args){$this->handlers=$handlers;$this->
 function
 proceed(){if($this->pos===0){throw
 new
-TexyException('No more handlers');}if(func_num_args()){$this->args=func_get_args();array_unshift($this->args,$this);}$this->pos--;$res=call_user_func_array($this->handlers[$this->pos],$this->args);if($res===NULL){throw
+InvalidStateException('No more handlers.');}if(func_num_args()){$this->args=func_get_args();array_unshift($this->args,$this);}$this->pos--;$res=call_user_func_array($this->handlers[$this->pos],$this->args);if($res===NULL){throw
 new
-TexyException("Invalid value returned from handler '".print_r($this->handlers[$this->pos],TRUE)."'");}return$res;}public
+UnexpectedValueException("Invalid value returned from handler '".print_r($this->handlers[$this->pos],TRUE)."'.");}return$res;}public
 function
 getParser(){return$this->parser;}public
 function
@@ -803,7 +807,7 @@ static$locales=array('cs'=>array('singleQuotes'=>array("\xe2\x80\x9a","\xe2\x80\
 function
 __construct($texy){$this->texy=$texy;$texy->registerPostLine(array($this,'postLine'),'typography');$texy->addHandler('beforeParse',array($this,'beforeParse'));}public
 function
-beforeParse($texy,&$text){if(isset(self::$locales[$this->locale]))$locale=self::$locales[$this->locale];else$locale=self::$locales['en'];$pairs=array('#(?<![.\x{2026}])\.{3,4}(?![.\x{2026}])#mu'=>"\xe2\x80\xa6",'#(?<=[\d ]|^)-(?=[\d ]|$)#'=>"\xe2\x80\x93",'#(?<=[^!*+,/:;<=>@\\\\_|-])--(?=[^!*+,/:;<=>@\\\\_|-])#'=>"\xe2\x80\x93",'#,-#'=>",\xe2\x80\x93",'#(?<!\d)(\d{1,2}\.) (\d{1,2}\.) (\d\d)#'=>"\$1\xc2\xa0\$2\xc2\xa0\$3",'#(?<!\d)(\d{1,2}\.) (\d{1,2}\.)#'=>"\$1\xc2\xa0\$2",'# --- #'=>"\xc2\xa0\xe2\x80\x94 ",'# ([\x{2013}\x{2014}])#u'=>"\xc2\xa0\$1",'# <-{1,2}> #'=>" \xe2\x86\x94 ",'#-{1,}> #'=>" \xe2\x86\x92 ",'# <-{1,}#'=>" \xe2\x86\x90 ",'#={1,}> #'=>" \xe2\x87\x92 ",'#(\d+)( ?)x\\2(?=\d)#'=>"\$1\xc3\x97",'#(?<=\d)x(?= |,|.|$)#m'=>"\xc3\x97",'#(\S ?)\(TM\)#i'=>"\$1\xe2\x84\xa2",'#(\S ?)\(R\)#i'=>"\$1\xc2\xae",'#\(C\)( ?\S)#i'=>"\xc2\xa9\$1",'#\(EUR\)#'=>"\xe2\x82\xac",'#(\d{1,3}) (?=\d{3})#'=>"\$1\xc2\xa0",'#(?<=[^\s\x17])\s+([\x17-\x1F]+)(?=\s)#u'=>"\$1",'#(?<=\s)([\x17-\x1F]+)\s+#u'=>"\$1",'#(?<=.{50})\s+(?=[\x17-\x1F]*\S{1,6}[\x17-\x1F]*$)#us'=>"\xc2\xa0",'#(?<=^| |\.|,|-|\+|\x16)([\x17-\x1F]*\d+\.?[\x17-\x1F]*)\s+(?=[\x17-\x1F]*[%'.TEXY_CHAR.'\x{b0}-\x{be}\x{2020}-\x{214f}])#mu'=>"\$1\xc2\xa0",'#(?<=^|[^0-9'.TEXY_CHAR.'])([\x17-\x1F]*[ksvzouiKSVZOUIA][\x17-\x1F]*)\s+(?=[\x17-\x1F]*[0-9'.TEXY_CHAR.'])#mus'=>"\$1\xc2\xa0",'#(?<!"|\w)"(?!\ |")(.+)(?<!\ |")"(?!")()#U'=>$locale['doubleQuotes'][0].'$1'.$locale['doubleQuotes'][1],'#(?<!\'|\w)\'(?!\ |\')(.+)(?<!\ |\')\'(?!\')()#Uu'=>$locale['singleQuotes'][0].'$1'.$locale['singleQuotes'][1],);$this->pattern=array_keys($pairs);$this->replace=array_values($pairs);}public
+beforeParse($texy,&$text){if(isset(self::$locales[$this->locale]))$locale=self::$locales[$this->locale];else$locale=self::$locales['en'];$pairs=array('#(?<![.\x{2026}])\.{3,4}(?![.\x{2026}])#mu'=>"\xe2\x80\xa6",'#(?<=[\d ]|^)-(?=[\d ]|$)#'=>"\xe2\x80\x93",'#(?<=[^!*+,/:;<=>@\\\\_|-])--(?=[^!*+,/:;<=>@\\\\_|-])#'=>"\xe2\x80\x93",'#,-#'=>",\xe2\x80\x93",'#(?<!\d)(\d{1,2}\.) (\d{1,2}\.) (\d\d)#'=>"\$1\xc2\xa0\$2\xc2\xa0\$3",'#(?<!\d)(\d{1,2}\.) (\d{1,2}\.)#'=>"\$1\xc2\xa0\$2",'# --- #'=>"\xc2\xa0\xe2\x80\x94 ",'# ([\x{2013}\x{2014}])#u'=>"\xc2\xa0\$1",'# <-{1,2}> #'=>" \xe2\x86\x94 ",'#-{1,}> #'=>" \xe2\x86\x92 ",'# <-{1,}#'=>" \xe2\x86\x90 ",'#={1,}> #'=>" \xe2\x87\x92 ",'#(\d+)( ?)x\\2(?=\d)#'=>"\$1\xc3\x97",'#(?<=\d)x(?= |,|.|$)#m'=>"\xc3\x97",'#(\S ?)\(TM\)#i'=>"\$1\xe2\x84\xa2",'#(\S ?)\(R\)#i'=>"\$1\xc2\xae",'#\(C\)( ?\S)#i'=>"\xc2\xa9\$1",'#\(EUR\)#'=>"\xe2\x82\xac",'#(\d{1,3}) (?=\d{3})#'=>"\$1\xc2\xa0",'#(?<=[^\s\x17])\s+([\x17-\x1F]+)(?=\s)#u'=>"\$1",'#(?<=\s)([\x17-\x1F]+)\s+#u'=>"\$1",'#(?<=.{50})\s+(?=[\x17-\x1F]*\S{1,6}[\x17-\x1F]*$)#us'=>"\xc2\xa0",'#(?<=^| |\.|,|-|\+|\x16|\()([\x17-\x1F]*\d+\.?[\x17-\x1F]*)\s+(?=[\x17-\x1F]*[%'.TEXY_CHAR.'\x{b0}-\x{be}\x{2020}-\x{214f}])#mu'=>"\$1\xc2\xa0",'#(?<=^|[^0-9'.TEXY_CHAR.'])([\x17-\x1F]*[ksvzouiKSVZOUIA][\x17-\x1F]*)\s+(?=[\x17-\x1F]*[0-9'.TEXY_CHAR.'])#mus'=>"\$1\xc2\xa0",'#(?<!"|\w)"(?!\ |")(.+)(?<!\ |")"(?!")()#U'=>$locale['doubleQuotes'][0].'$1'.$locale['doubleQuotes'][1],'#(?<!\'|\w)\'(?!\ |\')(.+)(?<!\ |\')\'(?!\')()#Uu'=>$locale['singleQuotes'][0].'$1'.$locale['singleQuotes'][1],);$this->pattern=array_keys($pairs);$this->replace=array_values($pairs);}public
 function
 postLine($text){return
 preg_replace($this->pattern,$this->replace,$text);}}final
@@ -826,10 +830,25 @@ function
 wrap($m){list(,$space,$s)=$m;return$space.wordwrap($s,$this->lineWrap,"\n".$space);}}if(!class_exists('LogicException',FALSE)){class
 LogicException
 extends
-Exception{}}if(!class_exists('BadMethodCallException',FALSE)){class
-BadMethodCallException
+Exception{}}if(!class_exists('InvalidArgumentException',FALSE)){class
+InvalidArgumentException
 extends
-LogicException{}}if(function_exists('mb_get_info')){if(mb_get_info('func_overload')&2&&substr(mb_get_info('internal_encoding'),0,1)==='U'){mb_internal_encoding('pass');trigger_error("Texy: mb_internal_encoding changed to 'pass'",E_USER_WARNING);}}if(ini_get('zend.ze1_compatibility_mode')%
-256||preg_match('#on$|TRUE$|yes$#iA',ini_get('zend.ze1_compatibility_mode'))){throw
+LogicException{}}if(!class_exists('RuntimeException',FALSE)){class
+RuntimeException
+extends
+Exception{}}if(!class_exists('UnexpectedValueException',FALSE)){class
+UnexpectedValueException
+extends
+RuntimeException{}}if(!class_exists('NotSupportedException',FALSE)){class
+NotSupportedException
+extends
+LogicException{}}if(!class_exists('MemberAccessException',FALSE)){class
+MemberAccessException
+extends
+LogicException{}}if(!class_exists('InvalidStateException',FALSE)){class
+InvalidStateException
+extends
+RuntimeException{}}if(function_exists('mb_get_info')){if(mb_get_info('func_overload')&2&&substr(mb_get_info('internal_encoding'),0,1)==='U'){mb_internal_encoding('pass');trigger_error("Texy: mb_internal_encoding changed to 'pass'",E_USER_WARNING);}}if(ini_get('zend.ze1_compatibility_mode')%
+256||preg_match('#on$|true$|yes$#iA',ini_get('zend.ze1_compatibility_mode'))){throw
 new
-TexyException("Texy cannot run with zend.ze1_compatibility_mode enabled");}
+RuntimeException("Texy cannot run with zend.ze1_compatibility_mode enabled.");}

@@ -21,12 +21,12 @@
 
 
 /**
- * Debug static class
+ * Debug static class.
  *
  * @author     David Grudl
  * @copyright  Copyright (c) 2004, 2008 David Grudl
  * @package    Nette
- * @version    $Revision$ $Date$
+ * @version    $Revision: 8 $ $Date: 2008-02-01 02:29:10 +0100 (pĂˇ, 01 II 2008) $
  */
 final class NDebug
 {
@@ -36,9 +36,13 @@ final class NDebug
     /** @var bool  */
     private static $enabled;
 
+    /** @var array  */
+    public static $keysToHide = array('password', 'passwd', 'pass', 'pwd', 'creditcard', 'credit card', 'cc', 'pin');
+
+
 
     /**
-     * Static class - cannot be instantiated
+     * Static class - cannot be instantiated.
      */
     final public function __construct()
     {
@@ -48,7 +52,7 @@ final class NDebug
 
 
     /**
-     * Static class constructor
+     * Static class constructor.
      */
     public static function constructStatic()
     {
@@ -62,7 +66,7 @@ final class NDebug
 
 
     /**
-     * Dumps information about a variable in readable format
+     * Dumps information about a variable in readable format.
      *
      * @param  mixed  variable to dump.
      * @param  bool   return output instead of printing it?
@@ -91,7 +95,7 @@ final class NDebug
 
 
     /**
-     * Starts/stops stopwatch
+     * Starts/stops stopwatch.
      * @return elapsed seconds
      */
     public static function timer()
@@ -106,7 +110,7 @@ final class NDebug
 
 
     /**
-     * Register error handler routine
+     * Register error handler routine.
      * @param  int   error_reporting level
      * @return void
      */
@@ -121,7 +125,7 @@ final class NDebug
 
 
     /**
-     * Unregister error handler routine
+     * Unregister error handler routine.
      * @return void
      */
     public static function disable()
@@ -136,7 +140,7 @@ final class NDebug
 
 
     /**
-     * Unregister error handler routine
+     * Unregister error handler routine.
      * @return void
      */
     public static function isEnabled()
@@ -147,7 +151,7 @@ final class NDebug
 
 
     /**
-     * NDebug exception handler
+     * NDebug exception handler.
      *
      * @param  Exception
      * @return void
@@ -155,38 +159,21 @@ final class NDebug
     public static function exceptionHandler(Exception $exception)
     {
         self::disable();
-        while (ob_get_level()) ob_end_clean();
-
-        $type = get_class($exception);
-        $code = $exception->getCode();
-        $message = $exception->getMessage();
-        $file = $exception->getFile();
-        $line = $exception->getLine();
-        $trace = $exception->getTrace();
-        $context = NULL;
+        while (ob_get_level() && ob_end_clean());
 
         if (self::$html) {
-            self::loadTemplate(
-                get_class($exception),
-                $exception->getCode(),
-                $exception->getMessage(),
-                $exception->getFile(),
-                $exception->getLine(),
-                $exception->getTrace(),
-                NULL,
-                $exception
-            );
+            self::blueScreen($exception);
         } else {
-            echo get_class($exception) . " '{$exception->getMessage()}' in {$exception->getFile()} on line {$exception->getLine()}\nPHP version "
-            . PHP_VERSION . "\n";
+            echo $exception->__toString() . "\nPHP version " . PHP_VERSION . "\nNette Framework version 0.7\n";
         }
+
         exit;
     }
 
 
 
     /**
-     * NDebug error handler
+     * NDebug error handler.
      *
      * @param  int    level of the error raised
      * @param  string error message
@@ -197,38 +184,40 @@ final class NDebug
      */
     public static function errorHandler($code, $message, $file, $line, $context)
     {
-        if ($code === E_USER_ERROR) {
+        $fatals = array(
+            E_ERROR => 'Fatal error', // unfortunately not catchable
+            E_CORE_ERROR => 'Fatal core rrror', // not catchable
+            E_COMPILE_ERROR => 'Fatal compile error', // unfortunately not catchable
+            E_USER_ERROR => 'Fatal error',
+            E_PARSE => 'Parse error', // unfortunately not catchable
+            E_RECOVERABLE_ERROR => 'Catchable fatal error', // since PHP 5.2
+        );
+
+        if (isset($fatals[$code])) {
             self::disable();
-            while (ob_get_level()) ob_end_clean();
+            while (ob_get_level() && ob_end_clean());
 
             $trace = debug_backtrace();
             array_shift($trace);
+            $type = $fatals[$code];
 
             if (self::$html) {
-                self::loadTemplate(
-                    'User error',
-                    $code,
-                    $message,
-                    $file,
-                    $line,
-                    $trace,
-                    $context,
-                    NULL
-                );
+                self::blueScreen(NULL, $type, $code, $message, $file, $line, $trace, $context);
             } else {
-                echo "User error '$message' in $file on line $line\nPHP version " . PHP_VERSION . "\n";
+                echo "$type '$message' in $file on line $line\nPHP version " . PHP_VERSION . "\nNette Framework version 0.7\n";
             }
             exit;
         }
 
         if (($code & error_reporting()) === $code) {
             $types = array(
-                E_RECOVERABLE_ERROR => 'Recoverable error',  // PHP 5.2
                 E_WARNING => 'Warning',
+                E_CORE_WARNING => 'Core warning', // not catchable
+                E_COMPILE_WARNING => 'Compile warning', // not catchable
+                E_USER_WARNING => 'Warning',
                 E_NOTICE => 'Notice',
-                E_USER_WARNING => 'User warning',
-                E_USER_NOTICE => 'User notice',
-                E_STRICT => 'Strict',
+                E_USER_NOTICE => 'Notice',
+                E_STRICT => 'Strict standards',
             );
             $type = isset($types[$code]) ? $types[$code] : 'Unknown error';
             if (self::$html) {
@@ -242,12 +231,41 @@ final class NDebug
 
 
     /**
-     * Load template
+     * Paint blue screen.
      * @return void
      */
-    private static function loadTemplate($type, $code, $message, $file, $line, $trace, $context, $exception)
+    public static function blueScreen($exception, $type = NULL, $code = NULL, $message = NULL, $file = NULL, $line = NULL, $trace = NULL, $context = NULL)
     {
+        if ($exception) {
+            $type = get_class($exception);
+            $code = $exception->getCode();
+            $message = $exception->getMessage();
+            $file = $exception->getFile();
+            $line = $exception->getLine();
+            $trace = $exception->getTrace();
+        }
         require JOSS_APP_DIR . '/config/NDebug.tpl'; // NOTE changed! not original
+    }
+
+
+
+    /**
+     * Filters output from self::dump() for sensitive informations.
+     * @param  string  content
+     * @param  string  additional key
+     * @return void
+     */
+    private static function filter($content, $key = NULL)
+    {
+        if ($key !== NULL && array_search(strtolower($key), self::$keysToHide, TRUE)) {
+            return '<i>*** hidden ***</i>';
+        }
+
+        return preg_replace(
+            '#^(\s*\["(' . implode('|', self::$keysToHide) . ')"\] => <span>string</span>).+#mi',
+            '$1 (?) <i>*** hidden ***</i>',
+            $content
+        );
     }
 
 }

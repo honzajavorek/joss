@@ -66,7 +66,7 @@ define('event', "");
  * @author     David Grudl
  * @copyright  Copyright (c) 2004, 2008 David Grudl
  * @package    Nette
- * @version    $Revision$ $Date$
+ * @version    $Revision: 104 $ $Date: 2008-01-13 03:47:59 +0100 (ne, 13 I 2008) $
  */
 abstract class NObject
 {
