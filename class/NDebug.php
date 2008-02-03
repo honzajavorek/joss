@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2004, 2008 David Grudl aka -dgx- (http://www.dgx.cz)
  *
- * This source file is subject to the "Nette license" that is bundled
+ * This source file is subject to the GNU GPL license that is bundled
  * with this package in the file license.txt.
  *
  * For more information please see http://nettephp.com/
@@ -26,7 +26,7 @@
  * @author     David Grudl
  * @copyright  Copyright (c) 2004, 2008 David Grudl
  * @package    Nette
- * @version    $Revision: 8 $ $Date: 2008-02-01 02:29:10 +0100 (pĂˇ, 01 II 2008) $
+ * @version    $Revision: 8 $ $Date: 2008-02-01 02:29:10 +0100 (pá, 01 II 2008) $
  */
 final class NDebug
 {

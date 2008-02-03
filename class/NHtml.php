@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2004, 2008 David Grudl aka -dgx- (http://www.dgx.cz)
  *
- * This source file is subject to the "Nette license" that is bundled
+ * This source file is subject to the GNU GPL license that is bundled
  * with this package in the file license.txt.
  *
  * For more information please see http://nettephp.com/
@@ -40,7 +40,7 @@
  * @author     David Grudl
  * @copyright  Copyright (c) 2004, 2008 David Grudl
  * @package    Nette::Web
- * @version    $Revision: 101 $ $Date: 2008-01-08 07:43:13 +0100 (Ăşt, 08 I 2008) $
+ * @version    $Revision: 101 $ $Date: 2008-01-08 07:43:13 +0100 (čt, 08 I 2008) $
  * @property   mixed element's attributes
  */
 class NHtml extends NObject implements ArrayAccess, Countable, IteratorAggregate
