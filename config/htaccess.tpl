@@ -19,7 +19,7 @@
 #################################
 # JOSS FRAMEWORK: HTACCESS FILE #
 #################################
-<? if ($rewrite) { ?><IfModule mod_rewrite.c>
+<? if ($rewrite): ?><IfModule mod_rewrite.c>
 
 ## mod
 AddDefaultCharset utf-8
@@ -45,7 +45,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . index.php [L]
 
-</IfModule><? } ?>
+</IfModule><? endif ?>
 
 <IfModule mod_php5.c>
 <?= $php ?>

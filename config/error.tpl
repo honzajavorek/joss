@@ -20,15 +20,15 @@
 <html><head>
 <title>An error has occured</title>
 </head><body>
+<!-- Apache-like error page :) -->
 <h1>An error has occured</h1>
 <p>Something really bad happened. Please contact the maintainer.</p>
 <ul>
-<? foreach($errors as $error) { ?>
+<? foreach($errors as $error): ?>
 	<li><?= $error ?></li>
-<? } ?>
+<? endforeach ?>
 </ul>
 </body></html>
-<!-- apache-like errorpage -->
 <?php
 
 // fix IE
