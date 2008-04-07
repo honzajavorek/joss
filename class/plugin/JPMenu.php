@@ -41,11 +41,15 @@ class JPMenu extends JPlugin {
 		
 		$class = ($this->args[0] == $get->export('doc', 'string'))? 'active' : NULL;
 		$link = JDoc::url($this->args[0]);
-		$text = (($this->args[1])? $this->args[1] : $this->args[0]);
+		$text = ((!empty($this->args[1]))? $this->args[1] : $this->args[0]);
 		
 		$li = NHtml::el('li')->class($class);
-		$a = NHtml::el('a')->href($link)->setText($text);
-		$li->add($a);
+		if (!$class) {
+			$menu = NHtml::el('a')->href($link)->setText($text);
+		} else {
+			$menu = NHtml::el('strong')->setText($text);
+		}
+		$li->add($menu);
 
 		return $li;
 	}

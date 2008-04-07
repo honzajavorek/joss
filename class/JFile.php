@@ -145,6 +145,7 @@ class JFile extends NObject {
 			$content = serialize($content);
 		}
 		// saving changes
+		$file = str_replace('safe://', '', $file);
 		if (file_put_contents($file, $content) === FALSE) {
 			throw new JException("File '$file' cannot be created or changed.");
 		}
@@ -230,7 +231,7 @@ class JFile extends NObject {
 		    }
 		    
 		} elseif ($this->local) { // local file
-			
+
 			return @is_file(str_replace('safe://', '', $this->file));
 			
 		} else { // others (ftp, ...)

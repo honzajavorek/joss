@@ -78,11 +78,11 @@ final class JFormatter extends NObject {
 		if (!$link) return $invocation->proceed();
 
 		if (Texy::isRelative($link->URL)) {
-			$link->URL = ($link->URL == 'index')? '' : urlencode($link->URL);
+			$link->URL = ($link->URL == 'index')? '' : $link->URL;
 			$link->URL = JDoc::url($link->URL);
 
 		} elseif (substr($link->URL, 0, 5) === 'file:') {
-			$link->URL = JOSS_URL_ROOT . '/web/file/' . urlencode(substr($link->URL, 5));
+			$link->URL = JOSS_URL_ROOT . '/web/file/' . substr($link->URL, 5);
 		} elseif (substr($link->URL, 0, 9) === 'download:') {
 			$link->URL = JOSS_URL_ROOT . '/web/file/download.php?item=' . urlencode(substr($link->URL, 9));
 		}

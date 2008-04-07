@@ -54,6 +54,7 @@ class JCache extends NObject {
 		}
  
 		$fCache = new JFile('safe://' . JOSS_APP_DIR . '/cache/' . $this->hash . '.cache');
+		
 		if ($fCache->exists()) { // exists cache?
 
 			if (microtime(TRUE) - $fCache->content['timestamp'] > ($expires * 60 * 60)) {

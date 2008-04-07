@@ -94,7 +94,7 @@ final class JConfig extends NObject implements ArrayAccess, Countable, IteratorA
 		}
 		
 		// php settings
-		$this->directives['display_errors'] = $this->data['debug'];
+		$this->directives['display_errors'] = (int)$this->data['debug'];
 		foreach ($this->directives as $directive => $value) {
 			ini_set($directive, $value);
 		}

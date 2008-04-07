@@ -102,6 +102,10 @@ class JPHead extends JPlugin {
 		$metaLanguage->attrs['http-equiv'] = 'content-language';
 		$metaLanguage->content($this->config['language']);
 		
+		$metaLanguage = NHtml::el('meta');
+		$metaLanguage->attrs['http-equiv'] = 'imagetoolbar';
+		$metaLanguage->content('no');
+		
 		// all
 		$output = '';
 		$meta = array(
