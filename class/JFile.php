@@ -278,7 +278,7 @@ class JFile extends NObject {
 		$wrappers = stream_get_wrappers();
 		$found = FALSE;
 		foreach ($wrappers as $wrapper) {
-			if (stripos($file, $wrapper) !== FALSE) {
+			if (stripos($file, $wrapper . '://') !== FALSE) {
 				$found = TRUE;
 				if ($wrapper == 'safe') {
 					$this->local = TRUE;

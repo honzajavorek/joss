@@ -121,6 +121,9 @@ final class JFormatter extends NObject {
 					$string = '<!--' . (($plugin->delayed)? 'D--' : '') . '{{' . $cmd . ': ' . $raw . '}}-->';
 				} else {
 					$string = $plugin->process();
+					if (is_object($string)) {
+						$string = $string->__toString();
+					}
 				}
 				
 				return $invocation->texy->protect($string, $plugin->type);
@@ -151,6 +154,16 @@ final class JFormatter extends NObject {
 	}
 	
 	/**
+	 * Escapes all special characters of PCRE regular expressions.
+	 *
+	 * @param string $s
+	 * @return string
+	 */
+	private function escapePattern($s) {
+		return preg_replace('~([\\$\\.\\[\\]\\|\\(\\)\\?\\*\\+\\{\\}\\^\\\])~', '\\\\\1', $s);
+	}
+	
+	/**
 	 * Searches for commented calls of plugins.
 	 *
 	 * @param string HTML
@@ -164,7 +177,7 @@ final class JFormatter extends NObject {
 		foreach ($matches as $i => $match) {
 			$matches[$i] = array_reverse($match);
 		}
-		// print_r($matches);
+		//print_r($matches);exit;
 
 		$i = 0;
 		$patterns = array();
@@ -172,7 +185,7 @@ final class JFormatter extends NObject {
 
 		foreach ($matches[1] as $cmd) {
 			// setting a pattern
-			$pattern = '~' . $matches[0][$i] . '~iu';
+			$pattern = '~' . $this->escapePattern($matches[0][$i]) . '~iu';
 			if (in_array($pattern, $patterns)) {
 				continue; // no duplicate occurances!
 			}
@@ -182,8 +195,9 @@ final class JFormatter extends NObject {
 			try {
 				$replacements[$i] = '';
 				if (class_exists($cmd)) {
-					$args = explode(',', str_replace(', ', ',', $matches[2][$i]));
+					$args = explode(',', str_replace(', ', ',', $matches[3][$i]));
 					$plugin = new $cmd((array)$args, $this->texy);
+
 					if (!$plugin instanceof JPlugin) {
 						throw new JException("Class doesn't seem to be a plugin.");
 					}
@@ -208,7 +222,6 @@ final class JFormatter extends NObject {
 
 		// print_r($patterns); print_r($replacements);
 		$html = preg_replace($patterns, $replacements, $html);
-
 		return $html;
 	}
 	
@@ -219,7 +232,7 @@ final class JFormatter extends NObject {
 	 * @return string
 	 */
 	private function processDelayedPlugins($html) {
-		return $this->processBlindedPlugins($html, '~<!--D--{{([^:]+):\\s([^}]+)?}}-->~iu');
+		return $this->processBlindedPlugins($html, '~<!--D--{{([^:]+)(:\\s([^}]+)?)?}}-->~iu');
 	}
 
 	/**
@@ -229,7 +242,7 @@ final class JFormatter extends NObject {
 	 * @return string
 	 */
 	private function processNotCachedPlugins($html) {
-		return $this->processBlindedPlugins($html, '~<!--{{([^:]+):\\s([^}]+)?}}-->~iu');
+		return $this->processBlindedPlugins($html, '~<!--{{([^:]+)(:\\s([^}]+)?)?}}-->~iu');
 	}
 	
 	/**

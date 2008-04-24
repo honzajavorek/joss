@@ -42,7 +42,7 @@ class JCache extends NObject {
 	 * Sets up a cache file.
 	 *
 	 * @param string $identifier Unique cache identifier.
-	 * @param callback $contentGetter Function which provides the content to be stored.
+	 * @param callback $content Function which provides the content to be stored.
 	 * @param int $expires Expiration time in hours.
 	 */
 	public function __construct($identifier, $content, $expires = 24) {

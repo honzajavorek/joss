@@ -43,7 +43,8 @@ class JPGlossary extends JPlugin {
 		while (FALSE !== ($f = $d->read())) {
 			if (!is_dir("$dir/$f") && $f{0} != '_' && $f{0} != '.') {
 				$entry = substr($f, 0, -5);
-				$texy->process(file_get_contents("$dir/$f", NULL, NULL, NULL, 500));
+				$file = new JFile("$dir/$f");
+				$texy->process($file->content);
 				$list->add(
 					NHtml::el('li')->setText("$entry: ")->add(
 						NHtml::el('a')->href(JDoc::url($entry))->setText($texy->headingModule->title)

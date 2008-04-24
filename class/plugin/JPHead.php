@@ -83,7 +83,7 @@ class JPHead extends JPlugin {
 	 * @return string
 	 */
 	private function getRobots() {
-		return (empty($config['allowrobots']) || !$config['allowrobots'])?
+		return (empty($this->config['allowrobots']) || !$this->config['allowrobots'])?
 			'noindex, nofollow' : 'all';
 	}
 	
