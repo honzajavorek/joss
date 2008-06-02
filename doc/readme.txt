@@ -1,7 +1,7 @@
 Joss
 ####
 
-© Jan Javorek, 2007 (http://work.javorek.net/joss)
+© Jan Javorek, 2007-2008 (http://code.google.com/p/joss-cms/)
 
 For more information, visit the author's website: http://www.javorek.net/.
 

@@ -184,7 +184,7 @@ final class JConfig extends NObject implements ArrayAccess, Countable, IteratorA
 		if ($allowIndexing) {
 			$f->content = '';
 		} else {
-			$f->content = 'User-agent: *\nDisallow: /';
+			$f->content = "User-agent: *\nDisallow: /";
 		}
 	}
 	
@@ -204,7 +204,7 @@ final class JConfig extends NObject implements ArrayAccess, Countable, IteratorA
 		$hostPrefix = substr($_SERVER['HTTP_HOST'], 0, 4);
 		if (JOSS_URL_ROOT == '' && $hostPrefix == 'www.') {
 			$www = "\n## www\nRewriteCond %{HTTP_HOST} ^" . substr($_SERVER['HTTP_HOST'], 4)
-			. "\nRewriteRule (.*) http://" . $_SERVER['HTTP_HOST'] . "/$1 [R=301,QSA,NE]\n";
+			. "\nRewriteRule (.*) http://" . $_SERVER['HTTP_HOST'] . "/$1 [R=301,QSA,L]\n";
 		}
 		$tpl->set('www', $www, FALSE);
 		

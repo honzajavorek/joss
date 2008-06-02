@@ -16,7 +16,7 @@
 
 /**
  * Encapsulates access to local/remote files.
- * 
+ *
  * @author     Jan (Honza) Javorek aka Littlemaple http://www.javorek.net
  * @copyright  Copyright (c) 2008 Jan Javorek
  * @package    Joss
@@ -30,21 +30,21 @@ class JFile extends NObject {
 	 * @var mixed
 	 */
 	private $content = NULL;
-	
+
 	/**
 	 * Path to the file.
-	 * 
+	 *
 	 * @var string
 	 */
 	public $file;
-	
+
 	/**
 	 * Type of data.
 	 *
 	 * @var string
 	 */
 	public $type = '';
-	
+
 	/**
 	 * Type of location (local/remote).
 	 *
@@ -54,32 +54,32 @@ class JFile extends NObject {
 
 	/**
 	 * Target file, if provided by link.
-	 * 
+	 *
 	 * @var JFile
 	 */
 	private $link = NULL;
-	
+
 	/**
 	 * Caching settings.
 	 *
 	 * @var bool
 	 */
 	private $cached = FALSE;
-	
+
 	/**
 	 * Character set encoding.
 	 *
 	 * @var string
 	 */
 	private $encoding = 'UTF-8';
-	
+
 	/**
 	 * Cache expiration in hours.
 	 *
 	 * @var float
 	 */
 	private $expires = 0;
-	
+
 	/**
 	 * Supported groups of extensions.
 	 *
@@ -89,7 +89,7 @@ class JFile extends NObject {
 		'txt' => array('', 'txt', 'texy', 'php', 'html', 'htm', 'tpl', 'css'),
 		'xml' => array('xml', 'rss')
 	);
-	
+
 	/**
 	 * Supported MIME types.
 	 *
@@ -99,14 +99,14 @@ class JFile extends NObject {
 		'txt' => array('', 'text/plain', 'text/html', 'application/xhtml+xml', 'text/css', 'text/javascript'),
 		'xml' => array('text/xml', 'application/xml', 'application/atom+xml', 'application/rss+xml')
 	);
-	
+
 	/**
 	 * Initialization indicator.
 	 *
 	 * @var bool
 	 */
 	private static $initialized = FALSE;
-	
+
 	/**
 	 * Constructor.
 	 *
@@ -128,7 +128,7 @@ class JFile extends NObject {
 		// file type
 		$this->type = $this->checkType();
 	}
-	
+
 	/**
 	 * File creator.
 	 *
@@ -152,7 +152,7 @@ class JFile extends NObject {
 		@chmod($file, 0777);
 		$this->content = NULL;
 	}
-	
+
 	/**
 	 * Content handler.
 	 *
@@ -160,7 +160,7 @@ class JFile extends NObject {
 	 */
 	public function getContent() {
 		if (!$this->exists()) {
-				throw new JException("File '$this->file' does not exist.");
+			throw new JException("File '$this->file' does not exist.");
 		}
 		if (!$this->content) {
 			if ($this->cached) { // cache
@@ -172,75 +172,79 @@ class JFile extends NObject {
 		}
 		return $this->content;
 	}
-	
+
 	/**
 	 * Returns valid URL address to a file.
-	 * 
+	 *
 	 * @return string $address
 	 */
 	public function getAddress() {
 		if ($this->local) {
 			$address = str_replace(array(
 				'safe://',
-				JOSS_APP_DIR
+			JOSS_APP_DIR
 			), array(
 				'',
-				JOSS_URL_ROOT
+			JOSS_URL_ROOT
 			), $this->file);
 		} else {
 			$address = $this->file;
 		}
 		return $address;
 	}
-	
+
 	/**
 	 * If linked, provides address to the target file.
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function isLinked() {
 		return (is_object($this->link))? TRUE : FALSE;
 	}
-	
+
 	/**
 	 * Exists the file?
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function exists() {
-		if (stripos($this->file, 'http://') !== FALSE) { // HTTP URL
-			
+		if (stripos($this->file, 'https://') !== FALSE) { // HTTPS
+
+			return TRUE; // TODO check the existency
+
+		} elseif (stripos($this->file, 'http://') !== FALSE) { // HTTP URL
+				
 			$url = str_replace('http://', '', $this->file);
-		    if (strstr($url, '/')) {
-		        $url = explode('/', $url, 2);
-		        $url[1] = '/' . $url[1];
-		    } else {
-		        $url = array($url, '/');
-		    }
-		    $fh = fsockopen($url[0], 80);
-		    if ($fh) {
-		        fputs($fh, 'GET ' . $url[1] . " HTTP/1.1\nHost:" . $url[0] . "\n\n");
-		        if (fread($fh, 22) == 'HTTP/1.1 404 Not Found') {
-		        	return FALSE;
-		        }
-		        else {
-		        	return TRUE;
-		        }
-		    } else {
-		    	return FALSE;
-		    }
-		    
+			if (strstr($url, '/')) {
+				$url = explode('/', $url, 2);
+				$url[1] = '/' . $url[1];
+			} else {
+				$url = array($url, '/');
+			}
+			$fh = fsockopen($url[0], 80);
+			if ($fh) {
+				fputs($fh, 'GET ' . $url[1] . " HTTP/1.1\nHost:" . $url[0] . "\n\n");
+				if (fread($fh, 22) == 'HTTP/1.1 404 Not Found') {
+					return FALSE;
+				}
+				else {
+					return TRUE;
+				}
+			} else {
+				return FALSE;
+			}
+
 		} elseif ($this->local) { // local file
 
 			return @is_file(str_replace('safe://', '', $this->file));
-			
+				
 		} else { // others (ftp, ...)
-		
+
 			throw new JException('Unable to decide if the file exists.');
-			
+				
 		}
 	}
-	
+
 	/**
 	 * Removes the file.
 	 */
@@ -256,7 +260,7 @@ class JFile extends NObject {
 			throw new JException("File '$file' cannot be deleted.");
 		}
 	}
-	
+
 	/**
 	 * Initializes atomic operations with files.
 	 */
@@ -268,7 +272,7 @@ class JFile extends NObject {
 			self::$initialized = TRUE;
 		}
 	}
-	
+
 	/**
 	 * Checks an presence of stream wrapper, adds safe:// for local files.
 	 *
@@ -296,17 +300,17 @@ class JFile extends NObject {
 			$file = "safe://$file"; // safe atomic operations
 		}
 	}
-	
+
 	/**
 	 * Resolves a type of requested file.
-	 * 
+	 *
 	 * @return string File type.
 	 */
 	private function checkType() {
 		if (!$this->exists()) {
 			return NULL;
 		}
-		
+
 		if ($this->local) { // local file
 			$info = pathinfo($this->file);
 			$type = (isset($info['extension']))? $info['extension'] : '';
@@ -316,7 +320,7 @@ class JFile extends NObject {
 			$groups = self::$mimeGroups;
 			$this->encoding = strtoupper($encoding); // encoding
 		}
-		
+
 		// link check
 		if ($type == 'link') {
 			$this->link = $this->followLink($this->file);
@@ -333,7 +337,7 @@ class JFile extends NObject {
 
 		return $type;
 	}
-	
+
 	/**
 	 * Forces UTF-8 for remote files.
 	 *
@@ -349,7 +353,7 @@ class JFile extends NObject {
 	 * Returns MIME type of remote file and it's encoding charset.
 	 *
 	 * Inspired by http://nadeausoftware.com/articles/2007/06/php_tip_how_get_web_page_content_type.
-	 * 
+	 *
 	 * @param string $link
 	 * @return array First is MIME, second charset.
 	 */
@@ -368,7 +372,7 @@ class JFile extends NObject {
 
 		return array($matches[1], (isset($matches[3]))? $matches[3] : 'UTF-8');
 	}
-	
+
 	/**
 	 * Follows the link and loads target's properties.
 	 *
@@ -389,21 +393,21 @@ class JFile extends NObject {
 		$this->content = NULL;
 		return $file;
 	}
-	
+
 	/**
 	 * Internal general way how to get the content.
-	 * 
+	 *
 	 * This is NOT a STANDARD WAY how to use JFile. This function is public to
 	 * allow Cache object load content for cache files. For access to content use
 	 * overloading such as $jfile->content or directly $jfile->getContent().
-	 * 
+	 *
 	 * @return mixed
 	 */
 	public function loadContent() {
 		if ($this->isLinked()) {
 			return $this->link->getContent();
 		}
-		
+
 		$loader = 'load' . ucfirst($this->type);
 
 		// calling a loader
@@ -412,7 +416,7 @@ class JFile extends NObject {
 		}
 		return $this->$loader($this->file);
 	}
-	
+
 	/**
 	 * INI file loader.
 	 *
@@ -423,7 +427,7 @@ class JFile extends NObject {
 	private function loadIni($file) {
 		return parse_ini_file($file, TRUE);
 	}
-	
+
 	/**
 	 * Cache file loader.
 	 *
@@ -433,7 +437,7 @@ class JFile extends NObject {
 	private function loadCache($file) {
 		return JCache::load($this->loadTxt($file));
 	}
-	
+
 	/**
 	 * RSS file loader.
 	 *
@@ -444,7 +448,7 @@ class JFile extends NObject {
 	private function loadRss($file) {
 		return $this->loadXml($file);
 	}
-	
+
 	/**
 	 * XML file loader.
 	 *
@@ -453,13 +457,13 @@ class JFile extends NObject {
 	 * @return SimpleXMLElement
 	 */
 	private function loadXml($file) {
-		$xml = simplexml_load_file(str_replace('safe://', '', $file));
+		$xml = @simplexml_load_file(str_replace('safe://', '', $file));
 		if ($xml === FALSE) {
 			throw new JException("File '$file' is not valid XML.");
 		}
 		return $xml;
 	}
-	
+
 	/**
 	 * Common text file loader.
 	 *
@@ -468,12 +472,12 @@ class JFile extends NObject {
 	 * @return string
 	 */
 	private function loadTxt($file) {
-		$string = file_get_contents($file);
+		$string = @file_get_contents($file);
 		if ($string === FALSE) {
 			throw new JException("Unable to parse the file '$file'.");
 		}
 		$this->checkEncoding($string);
 		return $string;
 	}
-	
+
 }
