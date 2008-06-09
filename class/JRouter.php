@@ -25,7 +25,6 @@
 final class JRouter extends NObject {
 
 	private $paths;
-	private $config;
 	private $get;
 
 	/**
@@ -33,7 +32,7 @@ final class JRouter extends NObject {
 	 *
 	 * @var array
 	 */
-	private $rewrite = array('doc' => 'string');
+	private static $rewrite = array('doc' => 'string');
 
 	/**
 	 * Language manager.
@@ -44,14 +43,13 @@ final class JRouter extends NObject {
 
 	public function __construct(&$paths, $contentRoot) {
 		$this->paths = &$paths;
-		$this->config = JConfig::getInstance();
 		$this->get = new JInput('get');
 
 		// language versions
 		$this->lang = new JLang($contentRoot);
 		if ($this->lang->otherVersionsExist()) {
 			// adding a language to the beginning of array
-			$this->rewrite = array_merge(array('lang' => 'string'), $this->rewrite);
+			self::$rewrite = array_merge(array('lang' => 'string'), self::$rewrite);
 		}
 	}
 
@@ -62,7 +60,7 @@ final class JRouter extends NObject {
 		$params = explode('/', trim($dir, '/'));
 
 		$i = 0;
-		foreach ($this->rewrite as $part => $type) {
+		foreach (self::$rewrite as $part => $type) {
 			if (!array_key_exists($i, $params)) { // nothing
 				break;
 			}
@@ -89,7 +87,8 @@ final class JRouter extends NObject {
 	 * @return string Document identifier.
 	 */
 	public function getIdentifier() {
-		if ($this->config['mod_rewrite']) {
+		$config = JConfig::getInstance();
+		if ($config['mod_rewrite']) {
 			$this->rewrite();
 		}
 
@@ -111,6 +110,7 @@ final class JRouter extends NObject {
 		$this->lang->setLanguage($this->get->export('lang', 'string'));
 		$this->paths = $this->lang->changePaths($this->paths);
 
+		// return
 		return strtolower($this->get->export('doc', 'string'));
 	}
 
@@ -135,5 +135,33 @@ final class JRouter extends NObject {
 			JOSS_URL_ROOT . '/' . $identifier
 			: JOSS_URL_ROOT . '/index.php?doc=' . $identifier;
 	}
+	
+	/**
+	 * Returns page identifier of the URL.
+	 * 
+	 * @param string $url
+	 * @return string
+	 */
+	public function id($url) {
+		$url = trim(preg_replace('~^' . JOSS_URL_ROOT . '~i', '', $url), '/');
+		
+		// classic url
+		$matches = array();
+		if (preg_match('~doc=([^\\?\\=\\&]*)~i', $url, $matches)) {
+			return $matches[1];
+		}
 
+		// rewrited url
+		$parts = explode('/', $url);
+		$i = 0;
+		foreach (self::$rewrite as $part => $type) {
+			if ($part == 'doc') {
+				break;
+			}
+			$i++;
+		}
+		
+		return $parts[$i];
+	}
+	
 }

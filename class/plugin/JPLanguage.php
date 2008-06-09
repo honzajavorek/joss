@@ -3,7 +3,7 @@
 /**
  * Joss framework & content management system.
  *
- * Created 31.1.2008.
+ * Created 9.6.2008.
  *
  * @author    Jan (Honza) Javorek aka Littlemaple http://www.javorek.net
  * @copyright Copyright (c) 2008 Jan Javorek
@@ -15,18 +15,18 @@
 
 
 /**
- * Menu link.
+ * Inter-language link.
  * 
  * Arguments:
- * 	[0] ... relative URL (page identifier)
- * 	[1] ... anchor text (optional)
+ * 	[0] ... language two-letter abbreviation
+ * 	[1] ... anchor text (optional) 
  *
  * @author     Jan (Honza) Javorek aka Littlemaple <honza@javorek.net>
  * @copyright  Copyright (c) 2008 Jan Javorek
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-class JPMenu extends JPlugin {
+class JPLanguage extends JPlugin {
 	
 	public $cached = FALSE;
 	
@@ -39,7 +39,7 @@ class JPMenu extends JPlugin {
 	public function process() {
 		$get = new JInput('get');
 		
-		$class = (JRouter::id($this->args[0]) == $get->export('doc', 'string'))? 'active' : NULL;
+		$class = ($this->args[0] == $get->export('lang', 'string'))? 'active' : NULL;
 		$link = JRouter::url($this->args[0]);
 		$text = ((!empty($this->args[1]))? $this->args[1] : $this->args[0]);
 		
