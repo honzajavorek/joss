@@ -174,13 +174,13 @@ class JPHead extends JPlugin {
 			
 			$file = $this->getCssFile($id);
 			if ($file) {
-				$css[] = NHtml::el('link')->rel('stylesheet')->type('text/css')->href("$url/$file")->media('screen,projection,tv');
+				$css[] = NHtml::el('link')->rel('stylesheet')->type('text/css')->href("$url/$file?" . filemtime("$dir/$file"))->media('screen,projection,tv');
 			}
 
 			// internet explorer
 			$file = $this->getCssFile($id, true, true);
 			if ($file) {
-				$comment = NHtml::el('link')->rel('stylesheet')->type('text/css')->href("$url/$file")->media('screen,projection,tv');
+				$comment = NHtml::el('link')->rel('stylesheet')->type('text/css')->href("$url/$file?" . filemtime("$dir/$file"))->media('screen,projection,tv');
 				$css[] = '<!--[if lte IE 7]>' . $comment->__toString() . '<![endif]-->';
 			}
 
@@ -189,7 +189,7 @@ class JPHead extends JPlugin {
 			foreach ($media as $item) {
 				$file = $this->getCssFile("_$item", false, false);
 				if ($file) {
-					$css[] = NHtml::el('link')->rel('stylesheet')->type('text/css')->href("$url/$file")->media($item);
+					$css[] = NHtml::el('link')->rel('stylesheet')->type('text/css')->href("$url/$file?" . filemtime("$dir/$file"))->media($item);
 				}
 			}
 			
@@ -219,7 +219,7 @@ class JPHead extends JPlugin {
 			$d = dir($dir);
 			while (FALSE !== ($entry = $d->read())) {
 				if (substr($entry, -3, 3) == '.js') {
-					$tag = NHtml::el('script')->type('text/javascript')->src("$url/$entry");
+					$tag = NHtml::el('script')->type('text/javascript')->src("$url/$entry?" . filemtime("$dir/$entry"));
 					$output .= "\t" . $tag->__toString() . "\n";
 				}
 			}
@@ -296,9 +296,10 @@ class JPHead extends JPlugin {
 		$output['rss'] = $this->getFeeds();
 		
 		// icon
+		$output['icon'] = '';
 		$f = new JFile(JOSS_APP_DIR . '/favicon.ico');
 		if ($f->exists()) {
-			$icon = NHtml::el('link')->rel('shortcut icon')->type('image/x-icon')->href(JOSS_URL_ROOT . "/favicon.ico");
+			$icon = NHtml::el('link')->rel('shortcut icon')->type('image/x-icon')->href(JOSS_URL_ROOT . '/favicon.ico?' . filemtime(JOSS_APP_DIR . '/favicon.ico'));
 			$output['icon'] = "\t" . $icon->__toString() . "\n";
 		}
 		

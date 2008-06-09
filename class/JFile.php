@@ -244,6 +244,17 @@ class JFile extends NObject {
 				
 		}
 	}
+	
+	/**
+	 * Returns UNIX timestamp of the last change.
+	 */
+	public function changed() {
+		if ($this->exists() && $this->local && !$this->cached) {
+			return @filemtime(str_replace('safe://', '', $this->file));
+		} else {
+			return false;
+		}
+	}
 
 	/**
 	 * Removes the file.
@@ -407,7 +418,11 @@ class JFile extends NObject {
 		if ($this->isLinked()) {
 			return $this->link->getContent();
 		}
-
+		if (empty($this->type)) {
+			$this->type = $this->checkType(); 
+		}
+		
+		
 		$loader = 'load' . ucfirst($this->type);
 
 		// calling a loader

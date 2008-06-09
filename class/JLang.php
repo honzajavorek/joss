@@ -112,7 +112,7 @@ class JLang extends NObject {
 	 * @param array $paths
 	 * @return array
 	 */
-	public function changePaths(array $paths) { // TODO
+	public function changePaths(array $paths) {
 		if ($this->current == $this->default) { // default language setting, no changes
 			return $paths;
 		}

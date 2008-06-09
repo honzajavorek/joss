@@ -23,37 +23,46 @@
  * @version    $Revision$ ($Date$, $Author$)
  */
 class JPGlossary extends JPlugin {
-	
+
 	public $cached = FALSE;
 
 	public $type = Texy::CONTENT_BLOCK;
-	
+
 	public function __construct($args, $texy) {
 		parent::__construct($args, $texy);
 	}
-	
+
 	public function process() {
 		$config = JConfig::getInstance();
+		$get = new JInput('get');
 		$texy = new Texy();
-		
+
 		$list = NHtml::el('dir')->id('glossary');
-		
-		$dir = JOSS_APP_DIR . '/web/content';
+
+		$dir = JDoc::$paths['text'];
 		$d = dir($dir);
+		
+		// languages
+		$l = '';
+		if (is_dir(JOSS_APP_DIR . JDoc::PATH . JLang::DIRECTORY_LANG)) { // multiple language versions
+			$l = basename($dir);
+			$l = (strlen($l) == 2)? "$l/" : "$config[language]/";
+		}
+
 		while (FALSE !== ($f = $d->read())) {
 			if (!is_dir("$dir/$f") && $f{0} != '_' && $f{0} != '.') {
-				$entry = substr($f, 0, -5);
+				$entry = $l . substr($f, 0, -5);
 				$file = new JFile("$dir/$f");
 				$texy->process($file->content);
 				$list->add(
 					NHtml::el('li')->setText("$entry: ")->add(
-						NHtml::el('a')->href(JRouter::url($entry))->setText($texy->headingModule->title)
-					));
+					NHtml::el('a')->href(JRouter::url($entry))->setText($texy->headingModule->title)
+				));
 			}
 		}
 		$d->close();
-		
+
 		return $list;
 	}
-	
+
 }

@@ -112,6 +112,7 @@ final class JConfig extends NObject implements ArrayAccess, Countable, IteratorA
 		
 		// files
 		$this->makeRobotsFile($this->data['allowrobots']);
+		$this->makeSitemapFile($this->data['language'], $this->data['allowrobots']);
 		$this->setUpHtaccessFile();
 	}
 	
@@ -185,6 +186,22 @@ final class JConfig extends NObject implements ArrayAccess, Countable, IteratorA
 			$f->content = '';
 		} else {
 			$f->content = "User-agent: *\nDisallow: /";
+		}
+	}
+	
+	/**
+	 * Manages sitemap.xml.
+	 * 
+	 * @param bool $allowIndexing allow/disallow
+	 * @return void
+	 */
+	private function makeSitemapFile($defaultLanguage, $allowIndexing = TRUE) {
+		$f = new JFile(JOSS_APP_DIR . '/sitemap.xml');
+		if ($allowIndexing) {
+			$map = new JSitemap($defaultLanguage, 60 * 60 * 24 * 7); // every week
+			$map->generate($f);	
+		} else {
+			$f->unlink();
 		}
 	}
 	
