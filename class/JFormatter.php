@@ -8,7 +8,7 @@
  * @author    Jan (Honza) Javorek aka Littlemaple http://www.javorek.net
  * @copyright Copyright (c) 2008 Jan Javorek
  * @package   Joss
- * @link      http://work.javorek.net/joss
+ * @link      http://code.google.com/p/joss-cms/
  * @license   GNU GENERAL PUBLIC LICENSE version 2
  */
 
@@ -78,8 +78,7 @@ final class JFormatter extends NObject {
 		if (!$link) return $invocation->proceed();
 
 		if (Texy::isRelative($link->URL)) {
-			$link->URL = ($link->URL == 'index')? '' : $link->URL;
-			$link->URL = JDoc::url($link->URL);
+			$link->URL = JRouter::url($link->URL);
 
 		} elseif (substr($link->URL, 0, 5) === 'file:') {
 			$link->URL = JOSS_URL_ROOT . '/web/file/' . substr($link->URL, 5);
@@ -303,5 +302,5 @@ final class JFormatter extends NObject {
 
 		return (self::ALL_AS_SOURCE)? '<pre>' . htmlspecialchars($html) . '</pre>' : $html;
 	}
-
+	
 }

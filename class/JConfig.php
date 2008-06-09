@@ -8,7 +8,7 @@
  * @author    Jan (Honza) Javorek aka Littlemaple http://www.javorek.net
  * @copyright Copyright (c) 2008 Jan Javorek
  * @package   Joss
- * @link      http://work.javorek.net/joss
+ * @link      http://code.google.com/p/joss-cms/
  * @license   GNU GENERAL PUBLIC LICENSE version 2
  */
 
@@ -106,7 +106,7 @@ final class JConfig extends NObject implements ArrayAccess, Countable, IteratorA
 			JException::setErrorTemplate(JOSS_APP_DIR . '/config/error.tpl');
 			JException::register(E_ALL | E_NOTICE);
 		}
-		
+
 		// conditions check
 		$this->checkConditions();
 		

@@ -8,7 +8,7 @@
  * @author    Jan (Honza) Javorek aka Littlemaple http://www.javorek.net
  * @copyright Copyright (c) 2008 Jan Javorek
  * @package   Joss
- * @link      http://work.javorek.net/joss
+ * @link      http://code.google.com/p/joss-cms/
  * @license   GNU GENERAL PUBLIC LICENSE version 2
  */
 
@@ -40,7 +40,7 @@ class JPMenu extends JPlugin {
 		$get = new JInput('get');
 		
 		$class = ($this->args[0] == $get->export('doc', 'string'))? 'active' : NULL;
-		$link = JDoc::url($this->args[0]);
+		$link = JRouter::url($this->args[0]);
 		$text = ((!empty($this->args[1]))? $this->args[1] : $this->args[0]);
 		
 		$li = NHtml::el('li')->class($class);

@@ -8,7 +8,7 @@
  * @author    Jan (Honza) Javorek aka Littlemaple http://www.javorek.net
  * @copyright Copyright (c) 2008 Jan Javorek
  * @package   Joss
- * @link      http://work.javorek.net/joss
+ * @link      http://code.google.com/p/joss-cms/
  * @license   GNU GENERAL PUBLIC LICENSE version 2
  */
 
@@ -24,9 +24,9 @@
  */
 final class JDoc extends NObject {
 	
-	const PATH_TEXT = '/web/content/';
-	const PATH_HEAD = '/web/content/head/';
-	const PATH_FOOT = '/web/content/foot/';
+	const PATH = '/web/content/';
+	const DIRECTORY_HEAD = 'head/';
+	const DIRECTORY_FOOT = 'foot/';
 
 	const EXT = '.texy';
 	const EXT_LINK = '.link';
@@ -42,57 +42,18 @@ final class JDoc extends NObject {
 	public static $paths = array();
 	
 	/**
-     * Static class - cannot be instantiated.
-     */
-	public function __construct() {
-		self::$paths = array(
-			'head' => JOSS_APP_DIR . self::PATH_HEAD,
-			'text' => JOSS_APP_DIR . self::PATH_TEXT,
-			'foot' => JOSS_APP_DIR . self::PATH_FOOT
-		);
-		$this->render($this->router());
-	}
-
-	/**
-	 * URL manager.
-	 * 
-	 * @return string Document identifier.
+	 * Constructor.
 	 */
-	private function router() {
-		$config = JConfig::getInstance();
-		$get = new JInput('get');
-		if ($config['mod_rewrite']) {
-			$rewrite = array(
-				'doc' => 'string'
-			);
-
-			// main parts
-			$dir = dirname($_SERVER['PHP_SELF']);
-			$dir = ($dir == '/')? substr($_SERVER['REQUEST_URI'], 1) : str_replace($dir, '', $_SERVER['REQUEST_URI']);
-			$params = explode('/', trim($dir, '/'));
-			$i = 0;
-			foreach ($rewrite as $part => $type) {
-				if (strpos($params[$i], '?') !== FALSE) { // query
-					break;
-				}
-				$get->set($part, $type, $params[$i]);
-				$i++;
-			}
-			
-			// query
-			$q = $params[count($params) - 1];
-			$q = explode('&', preg_replace('~(index\\.\\w{3,4})?\?~iu', '', $q));
-			foreach ($q as $var) {
-				$var = explode('=', $var);
-				$var[1] = (!isset($var[1]))? '' : $var[1];
-				$get->set(urldecode($var[0]), 'string', urldecode($var[1]));
-			}
-		}
-
-		if (!$get->export('doc', 'bool')) {
-			$get->set('doc', 'string', 'index');
-		}
-		return strtolower($get->export('doc', 'string'));
+	public function __construct() {
+		$contentRoot = JOSS_APP_DIR . self::PATH;
+		self::$paths = array(
+			'head' => $contentRoot . self::DIRECTORY_HEAD,
+			'text' => $contentRoot,
+			'foot' => $contentRoot . self::DIRECTORY_FOOT
+		);
+		
+		$router = new JRouter(self::$paths, $contentRoot);	
+		$this->render($router->getIdentifier());
 	}
 	
 	/**
@@ -151,6 +112,7 @@ final class JDoc extends NObject {
 	 * @param string $identifier
 	 */
 	private function render($identifier) {
+		// source
 		$source = $this->loadSource(self::$paths['head'], $identifier)
 			. $this->loadSource(self::$paths['text'], $identifier, NULL)
 			. $this->loadSource(self::$paths['foot'], $identifier);
@@ -164,19 +126,6 @@ final class JDoc extends NObject {
 		    $s = " \t\r\n";
 		    for ($i = 2e3; $i; $i--) echo $s{rand(0, 3)};
 		}
-	}
-	
-	/**
-	 * Composes URL according to mod_rewrite settings.
-	 *
-	 * @param string $identifier Page identifier.
-	 */
-	public static function url($identifier) {
-		$config = JConfig::getInstance();
-		$identifier = (empty($identifier) || $identifier == 'index')? NULL : urlencode((string)$identifier);
-		return ($config['mod_rewrite'] || !$identifier)?
-			JOSS_URL_ROOT . '/' . $identifier
-			: JOSS_URL_ROOT . '/index.php?doc=' . $identifier;
 	}
 	
 }

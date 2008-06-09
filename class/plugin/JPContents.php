@@ -8,7 +8,7 @@
  * @author    Jan (Honza) Javorek aka Littlemaple http://www.javorek.net
  * @copyright Copyright (c) 2008 Jan Javorek
  * @package   Joss
- * @link      http://work.javorek.net/joss
+ * @link      http://code.google.com/p/joss-cms/
  * @license   GNU GENERAL PUBLIC LICENSE version 2
  */
 
@@ -45,7 +45,7 @@ class JPContents extends JPlugin {
 			if ($skipH1 && $item['level'] == 1) { // skip H1
 				continue;
 			}			
-			$link = NHtml::el('a')->href(JDoc::url($self) . '#' . $item['el']->id)->setText($item['title']);
+			$link = NHtml::el('a')->href(JRouter::url($self) . '#' . $item['el']->id)->setText($item['title']);
 			$toc->add(NHtml::el('li')->add($link));
 		}
 

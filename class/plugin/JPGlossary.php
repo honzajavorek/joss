@@ -8,7 +8,7 @@
  * @author    Jan (Honza) Javorek aka Littlemaple http://www.javorek.net
  * @copyright Copyright (c) 2008 Jan Javorek
  * @package   Joss
- * @link      http://work.javorek.net/joss
+ * @link      http://code.google.com/p/joss-cms/
  * @license   GNU GENERAL PUBLIC LICENSE version 2
  */
 
@@ -47,7 +47,7 @@ class JPGlossary extends JPlugin {
 				$texy->process($file->content);
 				$list->add(
 					NHtml::el('li')->setText("$entry: ")->add(
-						NHtml::el('a')->href(JDoc::url($entry))->setText($texy->headingModule->title)
+						NHtml::el('a')->href(JRouter::url($entry))->setText($texy->headingModule->title)
 					));
 			}
 		}
