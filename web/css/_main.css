@@ -1,0 +1,151 @@
+/**
+ * Main stylesheet.
+ * (c) Jan Javorek, 2008 (http://www.javorek.net)
+ */
+
+
+
+/* general settings ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.hidden, hr { /* hidden elements */
+	position: absolute; left: -3800px;
+	visibility: hidden;
+	line-height: 0;
+	font-size: 0;
+}
+
+img { display: block; }
+address { font-style: normal; }
+a img { border: none; }
+a, a span, .button { cursor: pointer; }
+acronym, abbr { cursor: help; }
+table { color: #222; }
+
+a:link { color: #5b6e00; text-decoration: underline; }
+a:visited { color: #323232; }
+a:hover, a:focus { text-decoration: none; }
+
+
+
+/* basic layout ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+html, body {
+	margin: 0; padding: 0;
+	width: 100%;
+    font-family: arial, sans-serif;
+    cursor: default;
+    text-align: center;
+}
+
+html {
+	background: #222 url('../img/bg.png') center top;
+}
+
+#document {
+	position: relative;
+    width: 770px;
+    margin: 0 auto; padding: 0;
+    text-align: left;
+	color: #222;
+    font-size: 75%;
+}
+
+
+
+/* the rest ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+#header {
+	width: 100%; height: 220px;
+	background: url('../img/ship.png') center bottom no-repeat;
+	margin: 0;
+}
+
+#logo {
+	display: block;
+	position: absolute; left: 30px; top: 40px;
+	width: 258px; height: 83px;
+	background: url('../img/logo.png') center no-repeat;
+}
+
+#subtitle {
+	display: block;
+	position: absolute; left: 26px; top: 135px;
+	width: 267px; height: 27px;
+	background: url('../img/subtitle.png') center no-repeat;
+}
+
+#content {
+    background: #fff;
+    padding: 30px; padding-top: 100px;
+}
+
+#menu {
+	position: absolute; left: 30px; top: 230px;
+}
+
+menu, menu li {
+	list-style-type: none;
+	padding: 0; margin: 0;
+}
+
+#menu li {
+    float: left;
+    width: 109px; height: 45px;
+    margin-right: 1em;
+}
+
+#menu li a, #menu li strong {
+    display: block;
+    width: 100%; height: 100%;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    font-weight: normal;
+    font-size: 155%;
+    line-height: 38px;
+    background: url('../img/menu.png') center no-repeat;
+}
+
+#menu li strong {
+    background: url('../img/menu-active.png') center no-repeat;
+}
+
+#languages {
+	position: absolute; right: 90px; top: 40px;
+}
+
+#languages li {
+	width: 24px; height: 18px;
+	overflow: hidden;
+	position: relative;
+	margin-right: 0.5em;
+	float: left;
+}
+
+#languages a span, #languages strong span {
+    width: 24px; height: 18px;
+	display: block;
+	position: absolute; left: 0; top: 0;
+}
+
+#languages #lang-cs span { background-image: url('../img/lang-cs.png'); }
+#languages #lang-en span { background-image: url('../img/lang-en.png'); }
+
+#bottom {
+	width: 100%; height: 24px;
+	background: url('../img/bottom.png') top no-repeat;
+}
+
+h1 {
+	margin: 0 0 0.5em 0;
+	font-size: 200%;
+}
+
+h2 {
+	margin: 0 0 0.5em 0;
+	font-size: 150%;
+}
+
+li {
+	list-style-type: square;
+}
