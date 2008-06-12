@@ -200,7 +200,7 @@ final class JConfig extends NObject implements ArrayAccess, Countable, IteratorA
 		if ($allowIndexing) {
 			$map = new JSitemap($defaultLanguage, 60 * 60 * 24 * 7); // every week
 			$map->generate($f);	
-		} else {
+		} elseif ($f->exists()) {
 			$f->unlink();
 		}
 	}
