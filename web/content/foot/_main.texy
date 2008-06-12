@@ -1,0 +1,24 @@
+			</div>
+
+			<hr />
+			<div id="bottom">
+			<div id="menu">
+			    <h2 class="hidden">Menu</h2>
+			    <menu>
+{{menu: en/index, Homepage}}
+{{menu: en/links, Links}}
+			    </menu>
+			</div>
+
+			<hr />
+			<div id="languages">
+			    <h2 class="hidden">Languages</h2>
+			    <menu>
+{{language: en, english}}
+{{language: cs, česky}}
+			    </menu>
+			</div>
+			</div>
+	</div>
+</body>
+</html>

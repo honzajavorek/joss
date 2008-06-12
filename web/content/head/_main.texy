@@ -1,0 +1,9 @@
+{{head}}
+<body id="body-index">
+	<div id="document">
+
+			{{header: simple PHP framework}}
+
+			<hr />
+
+			<div id="content">
