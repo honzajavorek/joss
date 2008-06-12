@@ -45,9 +45,9 @@ class JPLanguage extends JPlugin {
 		
 		$li = NHtml::el('li')->class($class);
 		if (!$class) {
-			$menu = NHtml::el('a')->href($link)->setText($text);
+			$menu = NHtml::el('a')->id('lang-' . $this->args[0])->href($link)->setText($text)->add(NHtml::el('span'));
 		} else {
-			$menu = NHtml::el('strong')->setText($text);
+			$menu = NHtml::el('strong')->id('lang-' . $this->args[0])->setText($text)->add(NHtml::el('span'));
 		}
 		$li->add($menu);
 
