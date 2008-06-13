@@ -41,13 +41,13 @@ final class JRouter extends NObject {
 	 */
 	private $lang;
 
-	public function __construct(&$paths, $contentRoot) {
+	public function __construct(&$paths) {
 		$this->paths = &$paths;
 		$this->get = new JInput('get');
 
 		// language versions
-		$this->lang = new JLang($contentRoot);
-		if ($this->lang->otherVersionsExist()) {
+		$this->lang = new JLang();
+		if (JLang::moreVersionsExist()) {
 			// adding a language to the beginning of array
 			self::$rewrite = array_merge(array('lang' => 'string'), self::$rewrite);
 		}
@@ -97,7 +97,7 @@ final class JRouter extends NObject {
 			$this->get->set('doc', 'string', 'index');
 		}
 		if (!$this->lang->languageExists($this->get->export('lang', 'string'))) { // default 'language'
-			if ($this->lang->otherVersionsExist()) {
+			if (JLang::moreVersionsExist()) {
 				header('HTTP/1.1' . ($this->get->export('lang', 'bool'))? '301 Moved Permanently' : '404 Not Found');
 				header('Location: ' . JOSS_URL_ROOT . '/' . $this->lang->getLanguage() . '/');
 				exit();

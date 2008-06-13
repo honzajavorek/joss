@@ -35,7 +35,7 @@ class JPGlossary extends JPlugin {
 	public function process() {
 		$config = JConfig::getInstance();
 		$get = new JInput('get');
-		$texy = new JTexy();
+		$texy = new Texy(); // really! JTexy is not neccessary (and causes infinite cycles)
 
 		$list = NHtml::el('dir')->id('glossary');
 
@@ -44,7 +44,7 @@ class JPGlossary extends JPlugin {
 		
 		// languages
 		$l = '';
-		if (is_dir(JOSS_APP_DIR . JDoc::PATH . JLang::DIRECTORY_LANG)) { // multiple language versions
+		if (JLang::moreVersionsExist()) { // multiple language versions
 			$l = basename($dir);
 			$l = (strlen($l) == 2)? "$l/" : "$config[language]/";
 		}

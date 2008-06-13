@@ -25,18 +25,12 @@
 class JLang extends NObject {
 
 	const DIRECTORY_LANG = 'lang/';
-	private $contentRoot;
 
 	private $existing = array();
 	private $default;
 	private $current;
 
-	public function __construct($contentRoot) {
-		if (empty($contentRoot)) {
-			throw new InvalidArgumentException('Argument $contentRoot cannot be empty.');
-		}
-		$this->contentRoot = $contentRoot;
-
+	public function __construct() {
 		$config = JConfig::getInstance();
 		$this->default = $this->current = $config['language'];
 		$this->searchForLanguages();
@@ -78,8 +72,8 @@ class JLang extends NObject {
 	private function searchForLanguages() {
 		$this->existing[] = $this->default;
 
-		if ($this->otherVersionsExist()) {
-			$d = dir($this->contentRoot . self::DIRECTORY_LANG);
+		if (self::moreVersionsExist()) {
+			$d = dir(JOSS_APP_DIR . JDoc::PATH . self::DIRECTORY_LANG);
 			while (false !== ($entry = $d->read())) {
 				if (preg_match('~[a-z]{2}~i', $entry)) {
 					$this->existing[] = $entry;
@@ -92,8 +86,8 @@ class JLang extends NObject {
 	/**
 	 * Detection of presention of other language versions.
 	 */
-	public function otherVersionsExist() {
-		return is_dir($this->contentRoot . self::DIRECTORY_LANG);
+	public static function moreVersionsExist() {
+		return is_dir(JOSS_APP_DIR . JDoc::PATH . self::DIRECTORY_LANG);
 	}
 	
 	/**
@@ -118,8 +112,8 @@ class JLang extends NObject {
 		}
 		foreach ($paths as $index => $value) { // else... changing paths
 			$paths[$index] = str_replace(
-				$this->contentRoot,
-				$this->contentRoot . self::DIRECTORY_LANG . "$this->current/",
+				JOSS_APP_DIR . JDoc::PATH,
+				JOSS_APP_DIR . JDoc::PATH . self::DIRECTORY_LANG . "$this->current/",
 				$value
 			);
 		}
@@ -133,5 +127,5 @@ class JLang extends NObject {
 	public function getLanguage() {
 		return $this->current;
 	}
-	
+
 }

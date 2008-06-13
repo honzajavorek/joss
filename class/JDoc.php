@@ -52,7 +52,7 @@ final class JDoc extends NObject {
 			'foot' => $contentRoot . self::DIRECTORY_FOOT
 		);
 		
-		$router = new JRouter(self::$paths, $contentRoot);	
+		$router = new JRouter(self::$paths);	
 		$this->render($router->getIdentifier());
 	}
 	
