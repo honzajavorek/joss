@@ -35,7 +35,7 @@ class JPGlossary extends JPlugin {
 	public function process() {
 		$config = JConfig::getInstance();
 		$get = new JInput('get');
-		$texy = new Texy();
+		$texy = new JTexy();
 
 		$list = NHtml::el('dir')->id('glossary');
 

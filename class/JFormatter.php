@@ -25,133 +25,25 @@
 final class JFormatter extends NObject {
 
 	const ALL_AS_SOURCE = FALSE;
-	
-	/**
-	 * Configuration object.
-	 *
-	 * @var Config
-	 */
-	private $config;
-	
+
 	/**
 	 * Texy! object.
 	 *
 	 * @var Texy
 	 */
 	private $texy;
-	
+
 	/**
 	 * Formatted text.
 	 *
 	 * @var string
 	 */
 	private $text;
-	
+
 	public function __construct() {
-		$this->config = JConfig::getInstance();
-		$this->texy = new Texy();
-
-		// settings
-		$this->texy->htmlOutputModule->xhtml = NHtml::$xhtml = $this->config['xhtml']; // http://texy.info/cs/api-htmloutput-module
-		$this->texy->htmlOutputModule->removeOptional = FALSE;
-		$this->texy->imageModule->root = JOSS_URL_ROOT . '/web/file/';
-		$this->texy->imageModule->leftClass  = 'float-left';
-		$this->texy->imageModule->rightClass = 'float-right';
-		$this->texy->imageModule->defaultAlt = '';
-		$this->texy->headingModule->generateID = TRUE;
-
-		$this->texy->addHandler('phrase', array($this, 'phraseHandler'));
-		$this->texy->addHandler('script', array($this, 'scriptHandler'));
-	}
-	
-	/**
-	 * Extension of links.
-	 *
-	 * @param TexyHandlerInvocation  handler invocation
-	 * @param string
-	 * @param string
-	 * @param TexyModifier
-	 * @param TexyLink
-	 * @return TexyHtml|string|FALSE
-	 */
-	public function phraseHandler($invocation, $phrase, $content, $modifier, $link) {
-		if (!$link) return $invocation->proceed();
-
-		if (Texy::isRelative($link->URL)) {
-			$link->URL = JRouter::url($link->URL);
-
-		} elseif (substr($link->URL, 0, 5) === 'file:') {
-			$link->URL = JOSS_URL_ROOT . '/web/file/' . substr($link->URL, 5);
-		} elseif (substr($link->URL, 0, 9) === 'download:') {
-			$link->URL = JOSS_URL_ROOT . '/web/file/download.php?item=' . urlencode(substr($link->URL, 9));
-		}
-
-		return $invocation->proceed();
+		$this->texy = new JTexy();
 	}
 
-	/**
-	 * Plugin handler.
-	 *
-	 * @param TexyHandlerInvocation  handler invocation
-	 * @param string  command
-	 * @param array   arguments
-	 * @param string  arguments in raw format
-	 * @return NHtml|string|FALSE
-	 */
-	public function scriptHandler($invocation, $cmd, $args, $raw) {
-		try {
-			// plugin name
-			$cmd = $this->decodePluginName($cmd);
-			
-			if (class_exists($cmd)) {
-				$plugin = new $cmd((array)$args, $this->texy);
-				
-				// conditions
-				if (!$plugin instanceof JPlugin) {
-					throw new JException("Class doesn't seem to be a plugin.");
-				}
-				if (empty($plugin->type)) {
-						throw new JException("Plugin's type is not set.");
-				}
-				
-				// processing
-				if (($this->config['cached'] && !$plugin->cached) || $plugin->delayed) {
-					// plugin's output mustn't be cached OR plugin should be processed after Texy!
-					$string = '<!--' . (($plugin->delayed)? 'D--' : '') . '{{' . $cmd . ': ' . $raw . '}}-->';
-				} else {
-					$string = $plugin->process();
-					if (is_object($string)) {
-						$string = $string->__toString();
-					}
-				}
-				
-				return $invocation->texy->protect($string, $plugin->type);
-			}
-		} catch (Exception $e) {
-			// unknown identifier or error
-			$config = JConfig::getInstance();
-			if ($config['debug']) {
-				throw $e;
-			}
-			return $invocation->proceed();
-		}
-	}
-	
-	/**
-	 * Decodes plugin name, {{some_words}} are converted to JPSomeWords.
-	 *
-	 * @param string $cmd
-	 * @return string
-	 */
-	private function decodePluginName($cmd) {
-		$cmd = explode('_', $cmd);
-		foreach ($cmd as &$part) {
-			$part = ucfirst($part);
-		}
-		$cmd = 'JP' . implode('', $cmd);
-		return $cmd;
-	}
-	
 	/**
 	 * Escapes all special characters of PCRE regular expressions.
 	 *
@@ -161,7 +53,7 @@ final class JFormatter extends NObject {
 	private function escapePattern($s) {
 		return preg_replace('~([\\$\\.\\[\\]\\|\\(\\)\\?\\*\\+\\{\\}\\^\\\])~', '\\\\\1', $s);
 	}
-	
+
 	/**
 	 * Searches for commented calls of plugins.
 	 *
@@ -223,7 +115,7 @@ final class JFormatter extends NObject {
 		$html = preg_replace($patterns, $replacements, $html);
 		return $html;
 	}
-	
+
 	/**
 	 * Searches for commented calls of delayed plugins.
 	 *
@@ -243,7 +135,32 @@ final class JFormatter extends NObject {
 	private function processNotCachedPlugins($html) {
 		return $this->processBlindedPlugins($html, '~<!--{{([^:]+)(:\\s([^}]+)?)?}}-->~iu');
 	}
-	
+
+	/**
+	 * Makes the very first editations of source. Replaces special constants.
+	 *
+	 * @param string Source
+	 * @return string
+	 */
+	private function preProcessor($src) {
+		$get = new JInput('get');
+
+		// replacements
+		$src = str_replace(array(
+
+		'$$ ROOT $$',
+		'$$ LANGUAGE $$'
+		
+		), array(
+
+		JOSS_URL_ROOT . '/',
+		$get->export('lang', 'string')
+
+		), $src);
+
+		return $src;
+	}
+
 	/**
 	 * Makes some additional editations of HTML.
 	 *
@@ -252,7 +169,7 @@ final class JFormatter extends NObject {
 	 */
 	private function postProcessor($html) {
 		$get = new JInput('get');
-		
+
 		// replacements
 		$html = preg_replace(array(
 
@@ -272,18 +189,18 @@ final class JFormatter extends NObject {
 
 		return $this->processDelayedPlugins($html);
 	}
-	
+
 	/**
 	 * Formatting trigger.
-	 * 
+	 *
 	 * This is NOT a STANDARD WAY how to use JFormatter. This function is public to
 	 * allow Cache object load content for cache files. For access to content use
 	 * $jformatter->process().
 	 */
 	public function format() {
-		return $this->postProcessor(trim($this->texy->process($this->text)));
+		return $this->postProcessor(trim($this->texy->process($this->preProcessor($this->text))));
 	}
-	
+
 	/**
 	 * Provides formatted output.
 	 *
@@ -292,8 +209,9 @@ final class JFormatter extends NObject {
 	 */
 	public function process($text = '') {
 		$this->text = (string)$text;
-		
-		if ($this->config['cached']) {
+		$config = JConfig::getInstance();
+
+		if ($config['cached']) {
 			$cache = new JCache($this->text, array($this, 'format'), 300 * 24);
 			$html = $this->processNotCachedPlugins($cache->process());
 		} else {
@@ -302,5 +220,5 @@ final class JFormatter extends NObject {
 
 		return (self::ALL_AS_SOURCE)? '<pre>' . htmlspecialchars($html) . '</pre>' : $html;
 	}
-	
+
 }
