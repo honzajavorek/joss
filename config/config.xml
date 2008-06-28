@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	JOSS FRAMEWORK: CONFIGURATION FILE
+-->
+
+<config>
+
+	<!--
+		ENVIRONMENT SETTINGS
+	-->
+	
+	<!-- Allowed mod_rewrite? (If changed, delete main .htaccess file.) -->
+	<mod_rewrite>true</mod_rewrite>
+	
+	<!-- Debug switcher. Turn to false! -->
+	<debug>true</debug>
+
+
+
+	<!--
+		WEBSITE SETTINGS
+	-->
+	
+	<!-- Title of the website. (Default setting, can be empty.) -->
+	<title>Joss</title>
+	
+	<!-- Default language setting. (Initial setting, empty defaults to 'en'.) See http://www.w3.org/WAI/ER/IG/ert/iso639.htm . -->
+	<language>en</language>
+	
+	
+	
+	<!--
+		OUTPUT SETTINGS
+	-->
+	
+	<!-- Turns on/off caching. (Really recommended to turn the cache on.) -->
+	<cached>false</cached>
+	
+	<!-- Switches XHTML vs. HTML. -->
+	<xhtml>true</xhtml>
+	
+	<!-- Allow search robots (Google, Yahoo! etc.) index your website? (If changed, delete robots.txt file.) -->
+	<allowrobots>true</allowrobots>
+	
+	<!-- Author of the website. (Not important, can be empty.) -->
+	<author>Jan Javorek aka Littlemaple; http://www.javorek.net</author>
+	
+	<!-- Copyright. (Not important, can be empty.) -->
+	<copyright>(c)2007 Jan Javorek</copyright>
+	
+	<!-- Keywords and description (which is more important) for search engines. -->
+	<keywords>joss,framework,content management system</keywords>
+	<description>Joss, simple PHP framework.</description>
+
+</config>
