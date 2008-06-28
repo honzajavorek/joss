@@ -4,10 +4,12 @@
 			<div id="bottom">
 			<div id="menu">
 			    <h2 class="hidden">Menu</h2>
-			    <menu>
-{{menu: cs/index, Úvod}}
-{{menu: cs/odkazy, Odkazy}}
-			    </menu>
+{{menu: 0}}
+			</div>
+
+			<div id="submenu">
+			    <h2 class="hidden">Podmenu</h2>
+{{menu: 1}}
 			</div>
 
 			<hr />

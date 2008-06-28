@@ -20,9 +20,9 @@ if (version_compare(PHP_VERSION , '5', '<')) exit('Application needs \'PHP 5\' o
  * JOSS_CLASS_DIR - root directory for autoload (can be changed to load only one core for more websites)
  * JOSS_URL_ROOT - url root used for links
  */
-define('JOSS_APP_DIR', dirname(__FILE__));
-define('JOSS_CLASS_DIR', JOSS_APP_DIR . '/class');
-define('JOSS_URL_ROOT', (dirname($_SERVER['PHP_SELF']) == '/')? '' : dirname($_SERVER['PHP_SELF']));
+define('JOSS_APP_DIR', rtrim(str_replace('\\', '/', dirname(__FILE__)), '/'));
+define('JOSS_CLASS_DIR', rtrim(str_replace('\\', '/', JOSS_APP_DIR . '/class')), '/');
+define('JOSS_URL_ROOT', rtrim(str_replace('\\', '/', (dirname($_SERVER['PHP_SELF']) == '/')? '' : dirname($_SERVER['PHP_SELF']))), '/');
 
 // autoload
 require JOSS_CLASS_DIR . '/JAutoLoad.php';

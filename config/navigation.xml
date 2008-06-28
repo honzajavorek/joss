@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation>
+	<language name="cs">
+		<menu>
+			<item url="index">Úvod</item>
+			<item url="odkazy">Odkazy
+				<menu>
+					<item url="odkazy">Odkazy</item>
+					<item url="ukazka">Ukázka</item>
+				</menu>
+			</item>
+		</menu>
+	</language>
+	<language name="en">
+		<menu>
+			<item url="index">Home</item>
+			<item url="links">Links
+				<menu>
+					<item url="links">Links</item>
+					<item url="example">Example</item>
+				</menu>
+			</item>
+		</menu>
+	</language>
+</navigation>

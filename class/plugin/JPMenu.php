@@ -15,11 +15,10 @@
 
 
 /**
- * Menu link.
- * 
+ * Menu provider.
+ *
  * Arguments:
- * 	[0] ... relative URL (page identifier)
- * 	[1] ... anchor text (optional)
+ * 	[0] ... level of desired menu (default is the highest, 0)
  *
  * @author     Jan (Honza) Javorek aka Littlemaple <honza@javorek.net>
  * @copyright  Copyright (c) 2008 Jan Javorek
@@ -27,31 +26,103 @@
  * @version    $Revision$ ($Date$, $Author$)
  */
 class JPMenu extends JPlugin {
-	
-	public $cached = FALSE;
-	
+
+	public $cached = TRUE;
+
 	public $type = Texy::CONTENT_BLOCK;
-	
+
+	static private $navigation = NULL;
+
 	public function __construct($args, $texy) {
 		parent::__construct($args, $texy);
-	}
-	
-	public function process() {
-		$get = new JInput('get');
-		
-		$class = (JRouter::id($this->args[0]) == $get->export('doc', 'string'))? 'active' : NULL;
-		$link = JRouter::url($this->args[0]);
-		$text = ((!empty($this->args[1]))? $this->args[1] : $this->args[0]);
-		
-		$li = NHtml::el('li')->class($class);
-		if (!$class) {
-			$menu = NHtml::el('a')->href($link)->setText($text);
-		} else {
-			$menu = NHtml::el('strong')->setText($text);
+		if (!self::$navigation) {
+			$this->loadNavigationSettings();
 		}
-		$li->add($menu);
-
-		return $li;
 	}
-	
+
+	private function loadNavigationSettings() {
+		$xml = new JFile(JOSS_APP_DIR . '/config/navigation.xml');
+		self::$navigation = $xml->content;
+	}
+
+	private function findPage($id, SimpleXMLElement $menu) {
+		$path = array();
+		foreach ($menu->item as $item) {
+			$url = (string)$item['url'];
+			if (isset($item->menu)) { // submenu
+				$path = $this->findPage($id, $item->menu);
+				$path[] = $url;
+				return $path;
+			} elseif ($id == $url) { // single
+				$path[] = $url;
+				return $path;
+			}
+		}
+		return $path; // empty
+	}
+
+	private function drawMenu($level, SimpleXMLElement $menu, array $path) {
+		// exists?
+		if (!isset($path[$level])) {
+			return NHtml::el(); // empty
+		}
+		
+		// looking for desired level
+		for ($i = 0; $i < $level; $i++) {
+			foreach ($menu->item as $item) {
+				if (in_array((string)$item['url'], $path) && $item->menu) {
+					$menu = $item->menu;
+				}
+			}
+		}
+
+		// language
+		$lang = '';
+		$get = new JInput('get');
+		if (JLang::moreVersionsExist()) {
+			$lang = $get->export('lang', 'string') . '/';
+		}
+
+		// creating items
+		$html = NHtml::el('menu')->class("menu-level-$level");
+		foreach ($menu->item as $item) {
+			$url = $lang . $item['url'];
+
+			$class = ($item['url'] == $path[$level])? 'active' : NULL;
+			$link = JRouter::url($url);
+
+			$text = (string)$item;
+			$text = trim(((!empty($text))? $text : $url));
+
+			$li = NHtml::el('li')->class($class);
+			if (!$class) {
+				$filling = NHtml::el('a')->href($link)->setText($text);
+			} else {
+				$filling = NHtml::el('strong')->setText($text);
+			}
+			$html->add($li->add($filling));
+		}
+		return $html;
+	}
+
+	public function process() {
+		$xml = self::$navigation;
+		$get = new JInput('get');
+
+		$path = array();
+		$menu = NULL;
+		foreach ($xml->language as $language) {
+			if ($language['name'] == $get->export('lang', 'string')) {
+				$menu = $language->menu;
+				$path = array_reverse($this->findPage($get->export('doc', 'string'), $menu));
+				break;
+			}
+		}
+		if (empty($path) || !$menu) {
+			throw new JException('Menu in desired language or menu item not found.');
+		}
+
+		return $this->drawMenu($this->args[0], $menu, $path);
+	}
+
 }
