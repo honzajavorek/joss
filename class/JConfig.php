@@ -93,7 +93,19 @@ final class JConfig extends NObject implements ArrayAccess, Countable, IteratorA
 
 					case 'xml':
 						$xml = (array)$f->content;
+						
+						// comments
 						unset($xml['comment']);
+						
+						// boolean corrections
+						foreach ($xml as $key => $value) {
+							if (empty($value) || $value == 'false' || $value == '0') {
+								$xml[$key] = false;
+							} elseif ($value == 'true') {
+								$xml[$key] = true;
+							}
+						}
+						
 						return $xml;
 
 					default:

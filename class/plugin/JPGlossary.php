@@ -41,7 +41,7 @@ class JPGlossary extends JPlugin {
 
 		$dir = JDoc::$paths['text'];
 		$d = dir($dir);
-		
+
 		// languages
 		$l = '';
 		if (JLang::moreVersionsExist()) { // multiple language versions

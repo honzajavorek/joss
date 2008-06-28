@@ -173,6 +173,7 @@ final class JFormatter extends NObject {
 		// replacements
 		$html = preg_replace(array(
 
+		'~(?<=[^-]){{([^}:]+)(:[^}]+)?}}(?=[^-])~', // to hide buggy plugins
 		'~<!-- by Texy[^!]*! -->~iu',
 		'~<body([^>]*)>~iu',
 		'~</html>~iu',
@@ -180,6 +181,7 @@ final class JFormatter extends NObject {
 		
 		), array(
 
+		'<!-- [plugin error]: \\1 -->',
 		'',
 		'<body id="body-' . $get->export('doc', 'string') . '"\\1>',
 		'',
