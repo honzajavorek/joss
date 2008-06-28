@@ -148,8 +148,8 @@ final class JFormatter extends NObject {
 		// replacements
 		$src = str_replace(array(
 
-		'$$ ROOT $$',
-		'$$ LANGUAGE $$'
+		'§§ ROOT §§',
+		'§§ LANGUAGE §§'
 		
 		), array(
 
