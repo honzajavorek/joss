@@ -22,7 +22,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-final class JInput extends NObject {
+final class JInput extends Object {
 
 	private static $input = array();
 

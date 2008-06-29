@@ -22,7 +22,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-final class JFormatter extends NObject {
+final class JFormatter extends Object {
 
 	const ALL_AS_SOURCE = FALSE;
 
@@ -90,17 +90,17 @@ final class JFormatter extends NObject {
 					$plugin = new $cmd((array)$args, $this->texy);
 
 					if (!$plugin instanceof JPlugin) {
-						throw new JException("Class doesn't seem to be a plugin.");
+						throw new InvalidStateException("Class doesn't seem to be a plugin.");
 					}
 					$tmp = $plugin->process();
-					if ($tmp instanceof NHtml) {
+					if ($tmp instanceof Html) {
 						$tmp = $tmp->__toString();
 					} elseif (is_object($tmp)) {
-						throw new JException("Delayed or not cached plugins like '$cmd' must not use TexyHtml objects.");
+						throw new InvalidStateException("Delayed or not cached plugins like '$cmd' must not use TexyHtml objects.");
 					}
 					$replacements[$i] = (string)$tmp;
 				}
-			} catch (JException $e) {
+			} catch (InvalidStateException $e) {
 				// unknown identifier or error
 				$config = JConfig::getInstance();
 				if ($config['debug']) {

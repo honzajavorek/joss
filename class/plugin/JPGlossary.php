@@ -37,7 +37,7 @@ class JPGlossary extends JPlugin {
 		$get = new JInput('get');
 		$texy = new Texy(); // really! JTexy is not neccessary (and causes infinite cycles)
 
-		$list = NHtml::el('dir')->id('glossary');
+		$list = Html::el('dir')->id('glossary');
 
 		$dir = JDoc::$paths['text'];
 		$d = dir($dir);
@@ -55,8 +55,8 @@ class JPGlossary extends JPlugin {
 				$file = new JFile("$dir/$f");
 				$texy->process($file->content);
 				$list->add(
-					NHtml::el('li')->setText("$entry: ")->add(
-					NHtml::el('a')->href(JRouter::url($entry))->setText($texy->headingModule->title)
+					Html::el('li')->setText("$entry: ")->add(
+					Html::el('a')->href(JRouter::url($entry))->setText($texy->headingModule->title)
 				));
 			}
 		}

@@ -22,7 +22,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-final class JRouter extends NObject {
+final class JRouter extends Object {
 
 	private $paths;
 	private $get;

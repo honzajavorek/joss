@@ -40,13 +40,13 @@ class JPContents extends JPlugin {
 		$get = new JInput('get');
 		$self = $get->export('doc', 'string');	
 		
-		$toc = NHtml::el('ul')->id('TOC');
+		$toc = Html::el('ul')->id('TOC');
 		foreach ($this->texy->headingModule->TOC as $item) {
 			if ($skipH1 && $item['level'] == 1) { // skip H1
 				continue;
 			}			
-			$link = NHtml::el('a')->href(JRouter::url($self) . '#' . $item['el']->id)->setText($item['title']);
-			$toc->add(NHtml::el('li')->add($link));
+			$link = Html::el('a')->href(JRouter::url($self) . '#' . $item['el']->id)->setText($item['title']);
+			$toc->add(Html::el('li')->add($link));
 		}
 
 		return $toc;

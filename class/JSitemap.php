@@ -22,7 +22,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-class JSitemap extends NObject {
+class JSitemap extends Object {
 
 	private $defaultLanguage = NULL;
 	private $expires = NULL;

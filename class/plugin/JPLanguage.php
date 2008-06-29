@@ -43,11 +43,11 @@ class JPLanguage extends JPlugin {
 		$link = JRouter::url($this->args[0]);
 		$text = ((!empty($this->args[1]))? $this->args[1] : $this->args[0]);
 		
-		$li = NHtml::el('li')->class($class);
+		$li = Html::el('li')->class($class);
 		if (!$class) {
-			$menu = NHtml::el('a')->id('lang-' . $this->args[0])->href($link)->setText($text)->add(NHtml::el('span'));
+			$menu = Html::el('a')->id('lang-' . $this->args[0])->href($link)->setText($text)->add(Html::el('span'));
 		} else {
-			$menu = NHtml::el('strong')->id('lang-' . $this->args[0])->setText($text)->add(NHtml::el('span'));
+			$menu = Html::el('strong')->id('lang-' . $this->args[0])->setText($text)->add(Html::el('span'));
 		}
 		$li->add($menu);
 

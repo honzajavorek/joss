@@ -22,7 +22,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-abstract class JPlugin extends NObject {
+abstract class JPlugin extends Object {
 	
 	/**
 	 * Caching option.
@@ -69,7 +69,7 @@ abstract class JPlugin extends NObject {
 	
 	function __construct(array $args, Texy &$texy) {
 		if (empty($this->type)) {
-			throw new JException("Plugin's type is not set");
+			throw new InvalidStateException("Plugin's type is not set");
 		}
 		
 		$this->args = $args;
@@ -77,7 +77,7 @@ abstract class JPlugin extends NObject {
 		
 		// template?
 		if (empty($this->tpl)) {
-			$template = new JFile(JOSS_APP_DIR . '/config/' . $this->getClass() . '.tpl');
+			$template = new JFile(JOSS_APP_DIR . '/config/tpl/' . $this->getClass() . '.tpl');
 			if ($template->exists()) {
 				$this->tpl = new JTemplate($template->file); 
 			}

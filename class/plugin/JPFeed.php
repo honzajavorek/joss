@@ -54,7 +54,7 @@ class JPFeed extends JPlugin {
 	}
 	
 	public function parseFeed() {
-		$output = NHtml::el('ul')->class('feed');
+		$output = Html::el('ul')->class('feed');
 		
 		$file = new JFile($this->url, TRUE, $this->expirationTime);
 		$xml = $file->content;
@@ -91,8 +91,8 @@ class JPFeed extends JPlugin {
 				continue;
 			}
 			
-			$a = NHtml::el('a')->href($link)->setText($title);
-			$output->add(NHtml::el('li')->add($a));
+			$a = Html::el('a')->href($link)->setText($title);
+			$output->add(Html::el('li')->add($a));
 		}
 
 		return $output;

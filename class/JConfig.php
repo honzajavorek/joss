@@ -22,7 +22,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-final class JConfig extends NObject implements ArrayAccess, Countable, IteratorAggregate {
+final class JConfig extends Object implements ArrayAccess, Countable, IteratorAggregate {
 
 	const CONFIG_FILE = 'config.xml';
 
@@ -136,10 +136,10 @@ final class JConfig extends NObject implements ArrayAccess, Countable, IteratorA
 
 			// error handling
 			if ($this->data['debug']) {
-				NDebug::enable(E_ALL | E_NOTICE);
+				Debug::enable(E_ALL | E_NOTICE);
 			} else {
-				JException::setErrorTemplate(JOSS_APP_DIR . '/config/error.tpl');
-				JException::register(E_ALL | E_NOTICE);
+				JError::setErrorTemplate(JOSS_APP_DIR . '/config/tpl/error.tpl');
+				JError::register(E_ALL | E_NOTICE);
 			}
 
 			// conditions check
@@ -201,7 +201,7 @@ final class JConfig extends NObject implements ArrayAccess, Countable, IteratorA
 			}
 
 			if (!empty($errors)) {
-				JException::printError(JOSS_APP_DIR . '/config/error.tpl', $errors);
+				JError::printError(JOSS_APP_DIR . '/config/tpl/error.tpl', $errors);
 				exit;
 			}
 		}

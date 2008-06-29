@@ -44,7 +44,7 @@ class JPCsfd extends JPlugin {
 	}
 	
 	public function process() {
-		$output = NHtml::el('ul');
+		$output = Html::el('ul');
 
 		if (!empty($this->args[1])) {
 			$this->number = (int)$this->args[1];
@@ -68,7 +68,7 @@ class JPCsfd extends JPlugin {
 				);
 
 				for($i = 0; $i <= $this->number; $i++) {
-					$output->add(NHtml::el('li')->class('csfd')->setText(
+					$output->add(Html::el('li')->class('csfd')->setText(
 						$matches[2][$i] . '<br />' . $matches[3][$i],
 					TRUE));
 				}

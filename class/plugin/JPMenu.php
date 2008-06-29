@@ -64,7 +64,7 @@ class JPMenu extends JPlugin {
 	private function drawMenu($level, SimpleXMLElement $menu, array $path) {
 		// exists?
 		if (!isset($path[$level])) {
-			return NHtml::el(); // empty
+			return Html::el(); // empty
 		}
 		
 		// looking for desired level
@@ -84,7 +84,7 @@ class JPMenu extends JPlugin {
 		}
 
 		// creating items
-		$html = NHtml::el('menu')->class("menu-level-$level");
+		$html = Html::el('menu')->class("menu-level-$level");
 		foreach ($menu->item as $item) {
 			$url = $lang . $item['url'];
 
@@ -94,11 +94,11 @@ class JPMenu extends JPlugin {
 			$text = (string)$item;
 			$text = trim(((!empty($text))? $text : $url));
 
-			$li = NHtml::el('li')->class($class);
+			$li = Html::el('li')->class($class);
 			if (!$class) {
-				$filling = NHtml::el('a')->href($link)->setText($text);
+				$filling = Html::el('a')->href($link)->setText($text);
 			} else {
-				$filling = NHtml::el('strong')->setText($text);
+				$filling = Html::el('strong')->setText($text);
 			}
 			$html->add($li->add($filling));
 		}
@@ -119,7 +119,7 @@ class JPMenu extends JPlugin {
 			}
 		}
 		if (empty($path) || !$menu) {
-			throw new JException('Menu in desired language or menu item not found.');
+			throw new InvalidStateException('Menu in desired language or menu item not found.');
 		}
 
 		return $this->drawMenu($this->args[0], $menu, $path);

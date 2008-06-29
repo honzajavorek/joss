@@ -37,7 +37,7 @@ class JTexy extends Texy {
 		$cached = (bool)$config['cached'];
 
 		$this->setOutputMode(($config['xhtml'])? Texy::XHTML1_TRANSITIONAL : Texy::HTML4_STRICT);
-		NHtml::$xhtml = $config['xhtml'];
+		Html::$xhtml = $config['xhtml'];
 //		$this->htmlOutputModule->removeOptional = FALSE;
 
 		$this->imageModule->root = JOSS_URL_ROOT . '/web/file/';
@@ -81,7 +81,7 @@ class JTexy extends Texy {
 	 * @param string  command
 	 * @param array   arguments
 	 * @param string  arguments in raw format
-	 * @return NHtml|string|FALSE
+	 * @return Html|string|FALSE
 	 */
 	public function scriptHandler($invocation, $cmd, $args, $raw) {
 		try {
@@ -93,10 +93,10 @@ class JTexy extends Texy {
 
 				// conditions
 				if (!$plugin instanceof JPlugin) {
-					throw new JException("Class doesn't seem to be a plugin.");
+					throw new InvalidStateException("Class doesn't seem to be a plugin.");
 				}
 				if (empty($plugin->type)) {
-					throw new JException("Plugin's type is not set.");
+					throw new InvalidStateException("Plugin's type is not set.");
 				}
 
 				// processing

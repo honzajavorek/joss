@@ -22,7 +22,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-class JFile extends NObject {
+class JFile extends Object {
 
 	/**
 	 * Data loaded from the file.
@@ -138,7 +138,7 @@ class JFile extends NObject {
 		$file = $this->file;
 		// locality
 		if (!$this->local) {
-			throw new JException("File '$file' is not local, cannot be changed!");
+			throw new IOException("File '$file' is not local, cannot be changed!");
 		}
 		// data serialization
 		if (is_object($content) || is_array($content)) {
@@ -147,7 +147,7 @@ class JFile extends NObject {
 		// saving changes
 		$file = str_replace('safe://', '', $file);
 		if (file_put_contents($file, $content) === FALSE) {
-			throw new JException("File '$file' cannot be created or changed.");
+			throw new IOException("File '$file' cannot be created or changed.");
 		}
 		@chmod($file, 0777);
 		$this->content = NULL;
@@ -160,7 +160,7 @@ class JFile extends NObject {
 	 */
 	public function getContent() {
 		if (!$this->exists()) {
-			throw new JException("File '$this->file' does not exist.");
+			throw new FileNotFoundException("File '$this->file' does not exist.");
 		}
 		if (!$this->content) {
 			if ($this->cached) { // cache
@@ -240,7 +240,7 @@ class JFile extends NObject {
 				
 		} else { // others (ftp, ...)
 
-			throw new JException('Unable to decide if the file exists.');
+			throw new IOException('Unable to decide if the file exists.');
 				
 		}
 	}
@@ -262,13 +262,13 @@ class JFile extends NObject {
 	public function unlink() {
 		$file = $this->file;
 		if (!$this->local) {
-			throw new JException("File '$file' is not local, cannot be changed!");
+			throw new IOException("File '$file' is not local, cannot be changed!");
 		}
 		if (!$this->exists($file)) {
-			throw new JException("File '$file' does not exist.");
+			throw new FileNotFoundException("File '$file' does not exist.");
 		}
 		if (!unlink($file)) {
-			throw new JException("File '$file' cannot be deleted.");
+			throw new IOException("File '$file' cannot be deleted.");
 		}
 	}
 
@@ -277,8 +277,8 @@ class JFile extends NObject {
 	 */
 	private function init() {
 		if (!self::$initialized) {
-			if (!NSafeStream::register()) {
-				throw new JException('Unable to register protocol for atomic operations.');
+			if (!SafeStream::register()) {
+				throw new IOException('Unable to register protocol for atomic operations.');
 			}
 			self::$initialized = TRUE;
 		}
@@ -300,7 +300,7 @@ class JFile extends NObject {
 				} else { // remote file
 					$val = strtolower(ini_get('allow_url_fopen'));
 					if (!($val === 'on' || $val === 'TRUE' || $val === 'yes' || $val % 256)) {
-						throw new JException('Unable to work with remote files, \'allow_furl_open\' is turned off.');
+						throw new IOException('Unable to work with remote files, \'allow_furl_open\' is turned off.');
 					}
 				}
 				break;
@@ -393,7 +393,7 @@ class JFile extends NObject {
 	private function followLink($f) {
 		$link = trim(file_get_contents($f));
 		if (empty($link)) {
-			throw new JException("Unable to follow link '$file'.");
+			throw new IOException("Unable to follow link '$file'.");
 		}
 		$link = preg_replace('~^(\\./|(\\.{2}/)|/)~', JOSS_APP_DIR . '/\\2', $link);
 		$file = new JFile($link, FALSE, NULL);
@@ -474,7 +474,7 @@ class JFile extends NObject {
 	private function loadXml($file) {
 		$xml = @simplexml_load_file(str_replace('safe://', '', $file));
 		if ($xml === FALSE) {
-			throw new JException("File '$file' is not valid XML.");
+			throw new IOException("File '$file' is not valid XML.");
 		}
 		return $xml;
 	}
@@ -489,7 +489,7 @@ class JFile extends NObject {
 	private function loadTxt($file) {
 		$string = @file_get_contents($file);
 		if ($string === FALSE) {
-			throw new JException("Unable to parse the file '$file'.");
+			throw new IOException("Unable to parse the file '$file'.");
 		}
 		$this->checkEncoding($string);
 		return $string;

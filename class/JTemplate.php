@@ -23,7 +23,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-class JTemplate extends NObject {
+class JTemplate extends Object {
 	
     /**
 	 * Template file.

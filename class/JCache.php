@@ -22,7 +22,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-class JCache extends NObject {
+class JCache extends Object {
 	
 	/**
 	 * Content to be stored.

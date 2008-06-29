@@ -22,7 +22,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-final class JDoc extends NObject {
+final class JDoc extends Object {
 	
 	const PATH = '/web/content/';
 	const DIRECTORY_HEAD = 'head/';

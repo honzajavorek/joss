@@ -22,7 +22,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-class JLang extends NObject {
+class JLang extends Object {
 
 	const DIRECTORY_LANG = 'lang/';
 

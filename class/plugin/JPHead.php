@@ -94,15 +94,15 @@ class JPHead extends JPlugin {
 	 */
 	private function getMeta() {
 		// http-equiv
-		$metaContent = NHtml::el('meta');
+		$metaContent = Html::el('meta');
 		$metaContent->attrs['http-equiv'] = 'content-type';
 		$metaContent->content('text/html; charset=utf-8');
 		
-		$metaLanguage = NHtml::el('meta');
+		$metaLanguage = Html::el('meta');
 		$metaLanguage->attrs['http-equiv'] = 'content-language';
 		$metaLanguage->content($this->config['language']);
 		
-		$metaLanguage = NHtml::el('meta');
+		$metaLanguage = Html::el('meta');
 		$metaLanguage->attrs['http-equiv'] = 'imagetoolbar';
 		$metaLanguage->content('no');
 		
@@ -111,12 +111,12 @@ class JPHead extends JPlugin {
 		$meta = array(
 			$metaContent,
 			$metaLanguage,
-			NHtml::el('meta')->name('robots')->content($this->getRobots()),
-			NHtml::el('meta')->name('author')->content(str_replace('@', ' at ', $this->config['author'])),
-			NHtml::el('meta')->name('generator')->content('Joss + Texy2!'),
-			NHtml::el('meta')->name('copyright')->content(preg_replace(array('~\(c\)|&copy;|&#169;~iu', '~(©\\s*)?(\d{4})(-\d{4})?(\\s*©)?~iu'), array('©', '\\1\\2-' . date('Y') . '\\4'), $this->config['copyright'])),
-			NHtml::el('meta')->name('keywords')->content(str_replace(', ', ',', $this->config['keywords'])),
-			NHtml::el('meta')->name('description')->content($this->config['description'])
+			Html::el('meta')->name('robots')->content($this->getRobots()),
+			Html::el('meta')->name('author')->content(str_replace('@', ' at ', $this->config['author'])),
+			Html::el('meta')->name('generator')->content('Joss + Texy2!'),
+			Html::el('meta')->name('copyright')->content(preg_replace(array('~\(c\)|&copy;|&#169;~iu', '~(©\\s*)?(\d{4})(-\d{4})?(\\s*©)?~iu'), array('©', '\\1\\2-' . date('Y') . '\\4'), $this->config['copyright'])),
+			Html::el('meta')->name('keywords')->content(str_replace(', ', ',', $this->config['keywords'])),
+			Html::el('meta')->name('description')->content($this->config['description'])
 		);
 		
 		// rendering
@@ -174,13 +174,13 @@ class JPHead extends JPlugin {
 			
 			$file = $this->getCssFile($id);
 			if ($file) {
-				$css[] = NHtml::el('link')->rel('stylesheet')->type('text/css')->href("$url/$file?" . filemtime("$dir/$file"))->media('screen,projection,tv');
+				$css[] = Html::el('link')->rel('stylesheet')->type('text/css')->href("$url/$file?" . filemtime("$dir/$file"))->media('screen,projection,tv');
 			}
 
 			// internet explorer
 			$file = $this->getCssFile($id, true, true);
 			if ($file) {
-				$comment = NHtml::el('link')->rel('stylesheet')->type('text/css')->href("$url/$file?" . filemtime("$dir/$file"))->media('screen,projection,tv');
+				$comment = Html::el('link')->rel('stylesheet')->type('text/css')->href("$url/$file?" . filemtime("$dir/$file"))->media('screen,projection,tv');
 				$css[] = '<!--[if lte IE 7]>' . $comment->__toString() . '<![endif]-->';
 			}
 
@@ -189,7 +189,7 @@ class JPHead extends JPlugin {
 			foreach ($media as $item) {
 				$file = $this->getCssFile("_$item", false, false);
 				if ($file) {
-					$css[] = NHtml::el('link')->rel('stylesheet')->type('text/css')->href("$url/$file?" . filemtime("$dir/$file"))->media($item);
+					$css[] = Html::el('link')->rel('stylesheet')->type('text/css')->href("$url/$file?" . filemtime("$dir/$file"))->media($item);
 				}
 			}
 			
@@ -219,7 +219,7 @@ class JPHead extends JPlugin {
 			$d = dir($dir);
 			while (FALSE !== ($entry = $d->read())) {
 				if (substr($entry, -3, 3) == '.js') {
-					$tag = NHtml::el('script')->type('text/javascript')->src("$url/$entry?" . filemtime("$dir/$entry"));
+					$tag = Html::el('script')->type('text/javascript')->src("$url/$entry?" . filemtime("$dir/$entry"));
 					$output .= "\t" . $tag->__toString() . "\n";
 				}
 			}
@@ -250,7 +250,7 @@ class JPHead extends JPlugin {
 					$xml = $rss->content;
 					$title = $xml->channel->title . ' (RSS ' . $xml['version'] . ')';
 
-					$link = NHtml::el('link')->rel('alternate')->type('application/rss+xml')->title($title)->href($rss->getAddress());
+					$link = Html::el('link')->rel('alternate')->type('application/rss+xml')->title($title)->href($rss->getAddress());
 					$output .= "\t" . $link->__toString() . "\n";
 					
 				} catch (Exception $e) {
@@ -267,7 +267,7 @@ class JPHead extends JPlugin {
 	
 	public function process() {
 		if (!$this->tpl instanceof JTemplate) {
-			throw new JException('JPHead.tpl template file not found.');
+			throw new FileNotFoundException('JPHead.tpl template file not found.');
 		}
 		$this->reconfigure();
 		$output = array();
@@ -299,12 +299,12 @@ class JPHead extends JPlugin {
 		$output['icon'] = '';
 		$f = new JFile(JOSS_APP_DIR . '/favicon.ico');
 		if ($f->exists()) {
-			$icon = NHtml::el('link')->rel('shortcut icon')->type('image/x-icon')->href(JOSS_URL_ROOT . '/favicon.ico?' . filemtime(JOSS_APP_DIR . '/favicon.ico'));
+			$icon = Html::el('link')->rel('shortcut icon')->type('image/x-icon')->href(JOSS_URL_ROOT . '/favicon.ico?' . filemtime(JOSS_APP_DIR . '/favicon.ico'));
 			$output['icon'] = "\t" . $icon->__toString() . "\n";
 		}
 		
 		// title
-		$title = NHtml::el('title')->setText((string)$this->texy->headingModule->title . ' - ' . $this->config['title']);
+		$title = Html::el('title')->setText((string)$this->texy->headingModule->title . ' - ' . $this->config['title']);
 		$output['title'] = "\t" . $title->__toString() . "\n";
 		
 		// fetch
