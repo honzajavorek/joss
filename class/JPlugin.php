@@ -84,6 +84,21 @@ abstract class JPlugin extends Object {
 		}
 	}
 	
+	/**
+	 * Decodes plugin name, {{some-words}} are converted to JPSomeWords.
+	 *
+	 * @param string $cmd
+	 * @return string
+	 */
+	static public function resolveName($cmd) {
+		$cmd = explode('-', $cmd);
+		foreach ($cmd as &$part) {
+			$part = ucfirst($part);
+		}
+		$cmd = 'JP' . implode('', $cmd);
+		return $cmd;
+	}
+	
 	abstract public function process();
 	
 }

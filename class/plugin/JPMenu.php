@@ -51,7 +51,9 @@ class JPMenu extends JPlugin {
 			$url = (string)$item['url'];
 			if (isset($item->menu)) { // submenu
 				$path = $this->findPage($id, $item->menu);
-				$path[] = $url;
+				if (!empty($path)) {
+					$path[] = $url;
+				}
 				return $path;
 			} elseif ($id == $url) { // single
 				$path[] = $url;
@@ -62,8 +64,10 @@ class JPMenu extends JPlugin {
 	}
 
 	private function drawMenu($level, SimpleXMLElement $menu, array $path) {
-		// exists?
-		if (!isset($path[$level])) {
+		if (
+			!(empty($path) && $level == 0) // 404 etc.
+			&& (!isset($path[$level])) // exists?
+		) {
 			return Html::el(); // empty
 		}
 		
@@ -88,7 +92,7 @@ class JPMenu extends JPlugin {
 		foreach ($menu->item as $item) {
 			$url = $lang . $item['url'];
 
-			$class = ($item['url'] == $path[$level])? 'active' : NULL;
+			$class = (isset($path[$level]) && $item['url'] == $path[$level])? 'active' : NULL;
 			$link = JRouter::url($url);
 
 			$text = (string)$item;
@@ -118,7 +122,7 @@ class JPMenu extends JPlugin {
 				break;
 			}
 		}
-		if (empty($path) || !$menu) {
+		if (!$menu) {
 			throw new InvalidStateException('Menu in desired language or menu item not found.');
 		}
 

@@ -86,7 +86,7 @@ class JTexy extends Texy {
 	public function scriptHandler($invocation, $cmd, $args, $raw) {
 		try {
 			// plugin name
-			$cmd = $this->decodePluginName($cmd);
+			$cmd = JPlugin::resolveName($cmd);
 
 			if (class_exists($cmd)) {
 				$plugin = new $cmd((array)$args, $this);
@@ -120,21 +120,6 @@ class JTexy extends Texy {
 			}
 			return $invocation->proceed();
 		}
-	}
-
-	/**
-	 * Decodes plugin name, {{some_words}} are converted to JPSomeWords.
-	 *
-	 * @param string $cmd
-	 * @return string
-	 */
-	private function decodePluginName($cmd) {
-		$cmd = explode('_', $cmd);
-		foreach ($cmd as &$part) {
-			$part = ucfirst($part);
-		}
-		$cmd = 'JP' . implode('', $cmd);
-		return $cmd;
 	}
 
 }

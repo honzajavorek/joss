@@ -132,19 +132,19 @@ final class JRouter extends Object {
 		}
 
 		return ($config['mod_rewrite'] || !$identifier)?
-			JOSS_URL_ROOT . '/' . $identifier
-			: JOSS_URL_ROOT . '/index.php?doc=' . $identifier;
+		JOSS_URL_ROOT . '/' . $identifier
+		: JOSS_URL_ROOT . '/index.php?doc=' . $identifier;
 	}
-	
+
 	/**
 	 * Returns page identifier of the URL.
-	 * 
+	 *
 	 * @param string $url
 	 * @return string
 	 */
 	public function id($url) {
 		$url = trim(preg_replace('~^' . JOSS_URL_ROOT . '~i', '', $url), '/');
-		
+
 		// classic url
 		$matches = array();
 		if (preg_match('~doc=([^\\?\\=\\&]*)~i', $url, $matches)) {
@@ -160,8 +160,8 @@ final class JRouter extends Object {
 			}
 			$i++;
 		}
-		
+
 		return $parts[$i];
 	}
-	
+
 }

@@ -29,4 +29,4 @@ require JOSS_CLASS_DIR . '/nette/exceptions.php';
 require JOSS_CLASS_DIR . '/JAutoLoad.php';
 
 // application
-new JDoc();
+JDoc::render();

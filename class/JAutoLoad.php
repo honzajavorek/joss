@@ -79,9 +79,7 @@ final class JAutoLoad {
 	 * @param string $class
 	 */
 	public static function load($class) {
-		if (!self::scanDir(JOSS_CLASS_DIR, $class) || !class_exists($class)) {
-			throw new Exception("Class '$class' doesn't exist.");
-		}
+		self::scanDir(JOSS_CLASS_DIR, $class);
 	}
-	
+		
 }
