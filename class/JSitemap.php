@@ -72,11 +72,11 @@ class JSitemap extends Object {
 				$changefreq = ($entry == 'index')? 'daily' : 'monthly';
 				$priority = ($entry == 'index')? '1.0' : '0.2';
 				
-				$items .= "\t<url>\n
-					\t\t<loc>" . rtrim($loc, '/') . "/</loc>\n
-					\t\t<changefreq>$changefreq</changefreq>\n
-					\t\t<priority>$priority</priority>\n
-					\t</url>\n";
+				$items .= "\t<url>\n"
+					. "\t\t<loc>" . rtrim($loc, '/') . "/</loc>\n"
+					. "\t\t<changefreq>$changefreq</changefreq>\n"
+					. "\t\t<priority>$priority</priority>\n"
+					. "\t</url>\n";
 			}
 		}
 		$d->close();
@@ -110,7 +110,8 @@ class JSitemap extends Object {
 		}
 		
 		return
-			'<?xml version="1.0" encoding="utf-8"?><!-- Joss -->' . "\n" .
+			'<?xml version="1.0" encoding="utf-8"?>' . "\n" .
+			"<!--\n\tJOSS FRAMEWORK: SITEMAP FILE\n-->\n\n" .
 			'<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n" .
 			$items .
 			'</urlset>' . "\n";

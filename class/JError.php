@@ -18,7 +18,7 @@
  * @author     Jan (Honza) Javorek aka Littlemaple http://www.javorek.net
  * @copyright  Copyright (c) 2008 Jan Javorek
  * @package    Joss
- * @version    $Revision: 36 $ ($Date: 2008-06-09 09:11:03 +0200 (po, 09 VI 2008) $, $Author: jan.javorek $)
+ * @version    $Revision$ ($Date$, $Author$)
  */
 class PhpErrorException extends Exception
 {
@@ -32,7 +32,7 @@ class PhpErrorException extends Exception
  * @author     Jan (Honza) Javorek aka Littlemaple http://www.javorek.net
  * @copyright  Copyright (c) 2008 Jan Javorek
  * @package    Joss
- * @version    $Revision: 36 $ ($Date: 2008-06-09 09:11:03 +0200 (po, 09 VI 2008) $, $Author: jan.javorek $)
+ * @version    $Revision$ ($Date$, $Author$)
  */
 class JError extends Object {
 
