@@ -247,7 +247,7 @@ final class JConfig extends Object implements ArrayAccess, Countable, IteratorAg
 			if (is_file(JOSS_APP_DIR . '/.htaccess')) {
 				return;
 			}
-			$tpl = new JTemplate(JOSS_APP_DIR . '/config/htaccess.tpl');
+			$tpl = new JTemplate(JOSS_APP_DIR . '/config/tpl/htaccess.tpl');
 
 			// variables
 			$tpl->set('root', JOSS_URL_ROOT, FALSE);
