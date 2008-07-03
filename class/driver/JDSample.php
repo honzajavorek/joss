@@ -81,7 +81,7 @@ class JDSample extends JDriver {
 	 * Rendering of template.
 	 */
 	protected function render(JTemplate &$tpl) {
-		// maybe later...
+		// maybe later
 	}
 
 }
