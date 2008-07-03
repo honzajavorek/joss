@@ -82,9 +82,8 @@ class JPMenu extends JPlugin {
 
 		// language
 		$lang = '';
-		$get = new JInput('get');
 		if (JLang::moreVersionsExist()) {
-			$lang = $get->export('lang', 'string') . '/';
+			$lang = $_GET['lang'] . '/';
 		}
 
 		// creating items
@@ -111,14 +110,13 @@ class JPMenu extends JPlugin {
 
 	public function process() {
 		$xml = self::$navigation;
-		$get = new JInput('get');
 
 		$path = array();
 		$menu = NULL;
 		foreach ($xml->language as $language) {
-			if ($language['name'] == $get->export('lang', 'string')) {
+			if ($language['name'] == $_GET['lang']) {
 				$menu = $language->menu;
-				$path = array_reverse($this->findPage($get->export('doc', 'string'), $menu));
+				$path = array_reverse($this->findPage($_GET['doc'], $menu));
 				break;
 			}
 		}

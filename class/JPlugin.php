@@ -22,7 +22,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-abstract class JPlugin extends Object {
+abstract class JPlugin extends Object implements JInamed {
 	
 	/**
 	 * Caching option.
@@ -67,7 +67,7 @@ abstract class JPlugin extends Object {
 	 */
 	protected $tpl = NULL;
 	
-	function __construct(array $args, Texy &$texy) {
+	public function __construct(array $args, Texy &$texy) {
 		if (empty($this->type)) {
 			throw new InvalidStateException("Plugin's type is not set");
 		}

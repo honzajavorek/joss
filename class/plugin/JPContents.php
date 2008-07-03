@@ -37,8 +37,7 @@ class JPContents extends JPlugin {
 	
 	public function process() {
 		$skipH1 = (isset($this->args[0]))? !(bool)$this->args[0] : TRUE;
-		$get = new JInput('get');
-		$self = $get->export('doc', 'string');	
+		$self = $_GET['doc'];
 		
 		$toc = Html::el('ul')->id('TOC');
 		foreach ($this->texy->headingModule->TOC as $item) {

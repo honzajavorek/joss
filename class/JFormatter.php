@@ -143,8 +143,6 @@ final class JFormatter extends Object {
 	 * @return string
 	 */
 	private function preProcessor($src) {
-		$get = new JInput('get');
-
 		// replacements
 		$src = str_replace(array(
 
@@ -154,7 +152,7 @@ final class JFormatter extends Object {
 		), array(
 
 		JOSS_URL_ROOT . '/',
-		$get->export('lang', 'string')
+		$_GET['lang']
 
 		), $src);
 
@@ -168,8 +166,6 @@ final class JFormatter extends Object {
 	 * @return string
 	 */
 	private function postProcessor($html) {
-		$get = new JInput('get');
-
 		// replacements
 		$html = preg_replace(array(
 
@@ -183,7 +179,7 @@ final class JFormatter extends Object {
 
 		'<!-- [plugin error]: \\1 -->',
 		'',
-		'<body id="body-' . $get->export('doc', 'string') . '"\\1>',
+		'<body id="body-' . $_GET['doc'] . '"\\1>',
 		'',
 		"</body>\n</html>"
 		

@@ -42,9 +42,9 @@ abstract class JDoc extends Object {
 	public static $paths = array();
 
 	/**
-	 * Document factory.
+	 * Selects proper document class to handle the request.
 	 */
-	final static public function render() {
+	final static public function factory() {
 		// paths
 		$contentRoot = JOSS_APP_DIR . self::PATH;
 		self::$paths = array(
@@ -58,33 +58,34 @@ abstract class JDoc extends Object {
 		$identifier = $router->getIdentifier();
 
 		// preparations
-		$get = new JInput('get');
-		$action = JAction::resolveName($get->export('action', 'string'));
 		$driver = JDriver::resolveName($identifier);
 
 		// factory
-		if (class_exists($action)) {
-			new $action($identifier);
-		} elseif(class_exists($driver)) {
-			new $driver($identifier);
-		} else {
+		try {
+			if(class_exists($driver)) {
+				new $driver($identifier);
+			} else {
+				new JPage($identifier);
+			}
+		} catch (TemplateNotFoundException $e) {
 			new JPage($identifier);
 		}
 	}
-
-	/**
-	 * Decodes name.
-	 *
-	 * @param string $cmd
-	 * @return string
-	 */
-	abstract static public function resolveName($id);
 
 	protected function fixInternetExplorer() {
 		// fix IE
 		if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE 6.0')) {
 			$s = " \t\r\n";
 			for ($i = 2e3; $i; $i--) echo $s{rand(0, 3)};
+		}
+	}
+	
+	/**
+	 * Sends common headers. Prepared to be overriden.
+	 */
+	protected function sendCommonHeaders() {
+		if (!headers_sent()) {
+			header('Content-Type: text/html; charset=utf-8');
 		}
 	}
 

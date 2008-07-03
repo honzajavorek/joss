@@ -23,9 +23,65 @@
  * @version    $Revision$ ($Date$, $Author$)
  */
 class JDSample extends JDriver {
-	
+
 	public function __construct($id) {
-		echo 'driver';
+		parent::__construct($id);
+	}
+
+	/**
+	 * Define forms etc.
+	 * 
+	 * @return Form
+	 */
+	protected function define() {
+		$form = new Form();
+		$form->addText('name', 'Jméno:', 35);
+		$form->addSubmit('submit', 'ODESLAT');
+		
+		// define form rules
+		$form->addRule('name', Form::FILLED, 'Zadejte jméno!');
+		
+		return $form;
 	}
 	
+	/**
+	 * Actions, processing of form.
+	 * 
+	 * @param Form
+	 */
+	protected function act(Form &$form) {
+		if ($form->isSubmitted()) {
+		    echo '<h2>Submitted</h2>';
+		
+		    // check validation
+		    if ($form->isValid()) {
+		        echo '<h2>And successfully validated!</h2>';
+		
+		        $values = $form->getValues();
+		        echo '<pre>';
+		        print_r($values);
+		        echo '</pre>';
+		
+		        // this is the end :-)
+		        exit;
+		    }
+		
+		} else { // not submitted?
+		
+		    // so define default values
+		    $defaults = array(
+		        'name' => 'žanek',
+		    );
+		
+		    $form->setDefaults($defaults);
+		}
+	}
+
+	/**
+	 * Rendering of template.
+	 */
+	protected function render(JTemplate &$tpl) {
+		// maybe later...
+	}
+
 }

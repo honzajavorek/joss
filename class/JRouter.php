@@ -25,14 +25,13 @@
 final class JRouter extends Object {
 
 	private $paths;
-	private $get;
 
 	/**
 	 * Rewriting rules.
 	 *
 	 * @var array
 	 */
-	private static $rewrite = array('doc' => 'string');
+	private static $rewrite = array('doc', 'item');
 
 	/**
 	 * Language manager.
@@ -43,13 +42,12 @@ final class JRouter extends Object {
 
 	public function __construct(&$paths) {
 		$this->paths = &$paths;
-		$this->get = new JInput('get');
 
 		// language versions
 		$this->lang = new JLang();
 		if (JLang::moreVersionsExist()) {
 			// adding a language to the beginning of array
-			self::$rewrite = array_merge(array('lang' => 'string'), self::$rewrite);
+			self::$rewrite = array_merge(array('lang'), self::$rewrite);
 		}
 	}
 
@@ -60,14 +58,14 @@ final class JRouter extends Object {
 		$params = explode('/', trim($dir, '/'));
 
 		$i = 0;
-		foreach (self::$rewrite as $part => $type) {
+		foreach (self::$rewrite as $part) {
 			if (!array_key_exists($i, $params)) { // nothing
 				break;
 			}
 			if (strpos($params[$i], '?') !== FALSE) { // query
 				break;
 			}
-			$this->get->set($part, $type, $params[$i]);
+			$_GET[$part] = $params[$i];
 			$i++;
 		}
 
@@ -77,7 +75,7 @@ final class JRouter extends Object {
 		foreach ($q as $var) {
 			$var = explode('=', $var);
 			$var[1] = (!isset($var[1]))? '' : $var[1];
-			$this->get->set(urldecode($var[0]), 'string', urldecode($var[1]));
+			$_GET[urldecode($var[0])] = urldecode($var[1]);
 		}
 	}
 
@@ -93,25 +91,25 @@ final class JRouter extends Object {
 		}
 
 		// defaults
-		if (!$this->get->export('doc', 'bool')) { // default 'page'
-			$this->get->set('doc', 'string', 'index');
+		if (empty($_GET['doc'])) { // default 'page'
+		    $_GET['doc'] = 'index';
 		}
-		if (!$this->lang->languageExists($this->get->export('lang', 'string'))) { // default 'language'
+		if (!$this->lang->languageExists($_GET['lang'])) { // default 'language'
 			if (JLang::moreVersionsExist()) {
-				header('HTTP/1.1' . ($this->get->export('lang', 'bool'))? '301 Moved Permanently' : '404 Not Found');
+				header('HTTP/1.1' . (!empty($_GET['lang']))? '301 Moved Permanently' : '404 Not Found');
 				header('Location: ' . JOSS_URL_ROOT . '/' . $this->lang->getLanguage() . '/');
 				exit();
 			} else {
-				$this->get->set('lang', 'string', $this->lang->getLanguage());
+			    $_GET['lang'] = $this->lang->getLanguage();
 			}
 		}
 
 		// languages
-		$this->lang->setLanguage($this->get->export('lang', 'string'));
+		$this->lang->setLanguage((string)$_GET['lang']);
 		$this->paths = $this->lang->changePaths($this->paths);
 
 		// return
-		return strtolower($this->get->export('doc', 'string'));
+		return strtolower($_GET['doc']);
 	}
 
 	/**
@@ -154,7 +152,7 @@ final class JRouter extends Object {
 		// rewrited url
 		$parts = explode('/', $url);
 		$i = 0;
-		foreach (self::$rewrite as $part => $type) {
+		foreach (self::$rewrite as $part) {
 			if ($part == 'doc') {
 				break;
 			}

@@ -47,7 +47,7 @@ class JTemplate extends Object {
     function __construct($file) {
     	$f = new JFile($file);
     	if (!$f->exists()) {
-    		throw new DomainException("File '$file' does not exist.");
+    		throw new FileNotFoundException("File '$file' does not exist.");
     	} else {
         	$this->tpl = $f;
     	} 
@@ -61,20 +61,17 @@ class JTemplate extends Object {
      * @param bool $escape Explicit setting of escaping.
      */
     public function set($name, $value, $escape = TRUE) {
-		if (is_object($value)) { // object
-			if(method_exists($value, '__toString')) {
-				$this->vars[$name] = ($escape)? htmlspecialchars($value->__toString()) : $value->__toString();
-			} else {
-				throw new Exc("Template " . basename($this->file) . " cannot accept given object, because it is not another instance of Template class and it cannot be converted by '__toString' method.");
-			}
-		} elseif ($escape) { // variable (should be escaped)
+		if (!is_object($value) && $escape) { // variable, should be escaped
 			if (is_array($value)) {
 				array_walk_recursive($value, array($this, 'escape'));
 				$this->vars[$name] = $value;
 			} else {
 				$this->vars[$name] = $this->escape($value);
 			}
-		} else { // variable (should NOT be escaped)
+		} else { // variable, should NOT be escaped
+			if ($value instanceof JTemplate) {
+				$value = $value->fetch(); // embedded template
+			}
 			$this->vars[$name] = $value;
 		}
     }

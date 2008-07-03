@@ -283,8 +283,7 @@ class JPHead extends JPlugin {
 		$output['meta'] = $this->getMeta();
 		
 		// page identifier
-		$get = new JInput('get');
-		$id = $get->export('doc', 'string');
+		$id = $_GET['doc'];
 		
 		// css
 		$output['css'] = $this->getStyles($id);

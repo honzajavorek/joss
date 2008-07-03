@@ -37,9 +37,7 @@ class JPLanguage extends JPlugin {
 	}
 	
 	public function process() {
-		$get = new JInput('get');
-		
-		$class = ($this->args[0] == $get->export('lang', 'string'))? 'active' : NULL;
+		$class = ($this->args[0] == $_GET['lang'])? 'active' : NULL;
 		$link = JRouter::url($this->args[0]);
 		$text = ((!empty($this->args[1]))? $this->args[1] : $this->args[0]);
 		

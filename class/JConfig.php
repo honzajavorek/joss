@@ -141,6 +141,9 @@ final class JConfig extends Object implements ArrayAccess, Countable, IteratorAg
 				JError::setErrorTemplate(JOSS_APP_DIR . '/config/tpl/error.tpl');
 				JError::register(E_ALL | E_NOTICE);
 			}
+			
+			// HTTP layer
+			JHttp::init();
 
 			// conditions check
 			$this->checkConditions();

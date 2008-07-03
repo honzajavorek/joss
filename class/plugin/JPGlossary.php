@@ -34,7 +34,6 @@ class JPGlossary extends JPlugin {
 
 	public function process() {
 		$config = JConfig::getInstance();
-		$get = new JInput('get');
 		$texy = new Texy(); // really! JTexy is not neccessary (and causes infinite cycles)
 
 		$list = Html::el('dir')->id('glossary');
