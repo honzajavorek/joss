@@ -94,7 +94,7 @@ final class JRouter extends Object {
 		if (empty($_GET['doc'])) { // default 'page'
 		    $_GET['doc'] = 'index';
 		}
-		if (!$this->lang->languageExists($_GET['lang'])) { // default 'language'
+		if (empty($_GET['lang']) || !$this->lang->languageExists($_GET['lang'])) { // default 'language'
 			if (JLang::moreVersionsExist()) {
 				header('HTTP/1.1' . (!empty($_GET['lang']))? '301 Moved Permanently' : '404 Not Found');
 				header('Location: ' . JOSS_URL_ROOT . '/' . $this->lang->getLanguage() . '/');

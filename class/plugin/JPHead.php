@@ -115,8 +115,8 @@ class JPHead extends JPlugin {
 			Html::el('meta')->name('author')->content(str_replace('@', ' at ', $this->config['author'])),
 			Html::el('meta')->name('generator')->content('Joss + Texy2!'),
 			Html::el('meta')->name('copyright')->content(preg_replace(array('~\(c\)|&copy;|&#169;~iu', '~(©\\s*)?(\d{4})(-\d{4})?(\\s*©)?~iu'), array('©', '\\1\\2-' . date('Y') . '\\4'), $this->config['copyright'])),
-			Html::el('meta')->name('keywords')->content(str_replace(', ', ',', $this->config['keywords'])),
-			Html::el('meta')->name('description')->content($this->config['description'])
+			Html::el('meta')->name('keywords')->content(str_replace(', ', ',', str_replace('&#44;', ',', $this->config['keywords']))),
+			Html::el('meta')->name('description')->content(str_replace('&#44;', ',', $this->config['description']))
 		);
 		
 		// rendering

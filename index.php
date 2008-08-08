@@ -26,6 +26,7 @@ define('JOSS_URL_ROOT', rtrim(str_replace('\\', '/', (dirname($_SERVER['PHP_SELF
 
 // exceptions and autoload
 require JOSS_CLASS_DIR . '/exceptions.php';
+require JOSS_CLASS_DIR . '/interfaces.php';
 require JOSS_CLASS_DIR . '/JAutoLoad.php';
 
 // application

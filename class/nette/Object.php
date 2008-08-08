@@ -8,13 +8,14 @@
  * This source file is subject to the "Nette license" that is bundled
  * with this package in the file license.txt.
  *
- * For more information please see http://nettephp.com/
+ * For more information please see http://nettephp.com
  *
  * @copyright  Copyright (c) 2004, 2008 David Grudl
  * @license    http://nettephp.com/license  Nette license
- * @link       http://nettephp.com/
+ * @link       http://nettephp.com
  * @category   Nette
  * @package    Nette
+ * @version    $Id: Object.php 45 2008-08-08 10:46:16Z David Grudl $
  */
 
 /*namespace Nette;*/
@@ -55,15 +56,14 @@
  * Adding method to class (i.e. to all instances) works similar to JavaScript
  * prototype property. The syntax for adding a new method is:
  * <code>
- * function MyClass_prototype_newMethod(MyClass $obj, $arg, ...) { ... }
+ * MyClass::extensionMethod('newMethod', function(MyClass $obj, $arg, ...) { ... });
  * $obj = new MyClass;
- * $obj->newMethod($x); // equivalent to MyClass_prototype_newMethod($obj, $x);
+ * $obj->newMethod($x);
  * </code>
  *
  * @author     David Grudl
  * @copyright  Copyright (c) 2004, 2008 David Grudl
  * @package    Nette
- * @version    $Revision: 9 $ $Date: 2008-05-14 08:27:22 +0200 (st, 14 V 2008) $
  */
 abstract class Object
 {
@@ -73,9 +73,9 @@ abstract class Object
 	 *
 	 * @return string
 	 */
-	final public function getClass()
+	final public /*static*/ function getClass()
 	{
-		return get_class($this);
+		return /*get_called_class()*/ /**/get_class($this)/**/;
 	}
 
 
@@ -100,13 +100,13 @@ abstract class Object
 	 * @return mixed
 	 * @throws ::MemberAccessException
 	 */
-	protected function __call($name, $args)
+	public function __call($name, $args)
 	{
-		if ($name === '') {
-			throw new /*::*/MemberAccessException("Call to method without name.");
-		}
-
 		$class = get_class($this);
+
+		if ($name === '') {
+			throw new /*::*/MemberAccessException("Call to class '$class' method without name.");
+		}
 
 		// event functionality
 		if (self::hasEvent($class, $name)) {
@@ -119,15 +119,11 @@ abstract class Object
 			return;
 		}
 
-		// object prototypes support Class__method()
-		// (or use class Class__method { static function ... } with autoloading?)
-		$cl = $class;
-		do {
-			if (function_exists($nm = $cl . '_prototype_' . $name)) {
-				array_unshift($args, $this);
-				return call_user_func_array($nm, $args);
-			}
-		} while ($cl = get_parent_class($cl));
+		// extension methods
+		if ($cb = $this->extensionMethod($name, NULL/**/, $class/**/)) {
+			array_unshift($args, $this);
+			return call_user_func_array($cb, $args);
+		}
 
 		throw new /*::*/MemberAccessException("Call to undefined method $class::$name().");
 	}
@@ -142,10 +138,45 @@ abstract class Object
 	 * @return mixed
 	 * @throws ::MemberAccessException
 	 */
-	protected static function __callStatic($name, $args)
+	public static function __callStatic($name, $args)
 	{
 		$class = get_called_class();
 		throw new /*::*/MemberAccessException("Call to undefined static method $class::$name().");
+	}
+
+
+
+	/**
+	 * Adding method to class.
+	 *
+	 * @param  string  method name
+	 * @param  mixed   callback or closure
+	 * @return mixed
+	 */
+	public static function extensionMethod($name, $callback/**/, $class = NULL/**/)
+	{
+		static $list;
+		$name = strtolower($name);
+		/**/if ($class === NULL) /**/$class = get_called_class();
+
+		if ($callback === NULL) {
+			if (!isset($list[$name])) $list[$name] = array(); // for back compatibility
+			if (isset($list[$name])) {
+				$l = $list[$name];
+				do {
+					if (isset($l[$class])) {
+						return $l[$class];
+					}
+
+					if (function_exists($cb = $class . '_prototype_' . $name)) { // DEPRECATED
+						return $cb;
+					}
+				} while ($class = get_parent_class($class));
+		}
+
+		} else {
+			$list[$name][$class] = $callback;
+		}
 	}
 
 
@@ -157,14 +188,15 @@ abstract class Object
 	 * @return mixed   property value
 	 * @throws ::MemberAccessException if the property is not defined.
 	 */
-	protected function &__get($name)
+	public function &__get($name)
 	{
+		$class = get_class($this);
+
 		if ($name === '') {
-			throw new /*::*/MemberAccessException("Cannot read an property without name.");
+			throw new /*::*/MemberAccessException("Cannot read an class '$class' property without name.");
 		}
 
 		// property getter support
-		$class = get_class($this);
 		$m = 'get' . $name;
 		if (self::hasAccessor($class, $m)) {
 			// ampersands:
@@ -188,14 +220,15 @@ abstract class Object
 	 * @return void
 	 * @throws ::MemberAccessException if the property is not defined or is read-only
 	 */
-	protected function __set($name, $value)
+	public function __set($name, $value)
 	{
+		$class = get_class($this);
+
 		if ($name === '') {
-			throw new /*::*/MemberAccessException('Cannot assign to an property without name.');
+			throw new /*::*/MemberAccessException("Cannot assign to an class '$class' property without name.");
 		}
 
 		// property setter support
-		$class = get_class($this);
 		if (self::hasAccessor($class, 'get' . $name)) {
 			$m = 'set' . $name;
 			if (self::hasAccessor($class, $m)) {
@@ -218,7 +251,7 @@ abstract class Object
 	 * @param  string  property name
 	 * @return bool
 	 */
-	protected function __isset($name)
+	public function __isset($name)
 	{
 		return $name !== '' && self::hasAccessor(get_class($this), 'get' . $name);
 	}
@@ -232,7 +265,7 @@ abstract class Object
 	 * @return void
 	 * @throws ::MemberAccessException
 	 */
-	protected function __unset($name)
+	public function __unset($name)
 	{
 		$class = get_class($this);
 		throw new /*::*/MemberAccessException("Cannot unset an property $class::\$$name.");

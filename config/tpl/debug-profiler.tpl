@@ -1,77 +1,101 @@
 <?php
 
 /**
- * Nette Framework
+ * Nette Framework - Profiler screen template.
  *
  * Copyright (c) 2004, 2008 David Grudl (http://davidgrudl.com)
  *
  * This source file is subject to the "Nette license" that is bundled
  * with this package in the file license.txt.
  *
- * For more information please see http://nettephp.com/
- *
- * @copyright  Copyright (c) 2004, 2008 David Grudl
- * @license    http://nettephp.com/license  Nette license
- * @link       http://nettephp.com/
- * @category   Nette
- * @package    Nette
- */
-
-
-/**
- * Profiler template.
+ * For more information please see http://nettephp.com
  *
  * @author     David Grudl
  * @copyright  Copyright (c) 2004, 2008 David Grudl
+ * @license    http://nettephp.com/license  Nette license
+ * @link       http://nettephp.com
+ * @category   Nette
  * @package    Nette
- * @version    $Revision: 7 $ $Date: 2008-05-12 03:21:36 +0200 (po, 12 V 2008) $
+ * @version    $Id: profiler.phtml 43 2008-07-25 01:15:20Z David Grudl $
+ *
+ * @param  array     $colophons
  */
 
-// passed parameters: (none)
-
-
 ?>
-<table style="position: absolute; color: white; background: black; font-size: 10px; font-family: Arial; left: 0; bottom: 0; width: 200px;">
-<tr>
-	<td>Time:</td>
-	<td><?php echo time() - $_SERVER['REQUEST_TIME'] ?> s</td>
-</tr>
+</pre></xmp>
 
-<?php
-$list = get_included_files();
-$al = class_exists(/*Nette::Loaders::*/'AutoLoader', FALSE) ?  /*Nette::Loaders::*/AutoLoader::$count : 0;
-?><tr title="<?php echo implode("\n", $list) ?>">
-	<td>Included files:</td>
-	<td><?php echo count($list), ' (', $al ?> by autoloader)</td>
-</tr>
+<style type="text/css">
+/* <![CDATA[ */
+	#netteProfilerContainer {
+		position: absolute;
+		right: 5px;
+		bottom: 5px;
+	}
 
-<?php
-$list = array_diff(get_declared_classes(), spl_classes());
-?><tr title="<?php echo implode(", ", $list) ?>">
-	<td>Defined classes:</td>
-	<td><?php echo count($list) ?></td>
-</tr>
+	#netteProfiler {
+		position: relative;
+		margin: 0;
+		padding: 1px;
+		width: 350px;
+		color: black;
+		background: #EEE;
+		border: 1px dotted gray;
+		cursor: move;
+		opacity: .70;
+		=filter: alpha(opacity=70);
+	}
 
-<?php
-$list = get_declared_interfaces();
-?><tr title="<?php echo implode(", ", $list) ?>">
-	<td>Defined interfaces:</td>
-	<td><?php echo count($list) ?></td>
-</tr>
+	#netteProfiler:hover {
+		opacity: 1;
+		=filter: none;
+	}
 
-<?php
-$list = get_defined_functions();
-$list = (array) @$list['user'];
-?><tr title="<?php echo implode(", ", $list) ?>">
-	<td>Defined functions:</td>
-	<td><?php echo count($list) ?></td>
-</tr>
+	#netteProfiler li {
+		margin: 0;
+		padding: 1px;
+		font: normal normal 11px/1.4 Consolas, Arial;
+		text-align: left;
+		list-style: none;
+	}
 
-<?php
-$list = get_defined_constants(TRUE);
-$list = array_keys((array) @$list['user']);
-?><tr title="<?php echo implode(", ", $list) ?>">
-	<td>Defined constants:</td>
-	<td><?php echo count($list) ?></td>
-</tr>
-</table>
+	#netteProfiler span[title] {
+		border-bottom: 1px dotted gray;
+		cursor: help;
+	}
+/* ]]> */
+</style>
+
+
+<div id="netteProfilerContainer">
+<ul id="netteProfiler">
+	<?php foreach ($colophons as $callback): ?>
+	<?php foreach ((array) call_user_func($callback, 'profiler') as $line): ?><li><?php echo $line, "\n" ?></li><?php endforeach ?>
+	<?php endforeach ?>
+</ul>
+</div>
+
+
+<script type="text/javascript">
+/* <![CDATA[ */
+document.getElementById('netteProfiler').onmousedown = function(e) {
+	e = e || event;
+	this.posX = parseInt(this.style.left + '0');
+	this.posY = parseInt(this.style.top + '0');
+	this.mouseX = e.clientX;
+	this.mouseY = e.clientY;
+
+	var thisObj = this;
+
+	document.documentElement.onmousemove = function(e) {
+		e = e || event;
+		thisObj.style.left = (e.clientX - thisObj.mouseX + thisObj.posX) + "px";
+		thisObj.style.top = (e.clientY - thisObj.mouseY + thisObj.posY) + "px";
+	};
+
+	document.documentElement.onmouseup = function(e) {
+		document.documentElement.onmousemove = null;
+		document.documentElement.onmouseup = null;
+	};
+};
+/* ]]> */
+</script>

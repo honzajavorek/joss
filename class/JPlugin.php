@@ -22,7 +22,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-abstract class JPlugin extends Object implements JInamed {
+abstract class JPlugin extends Object implements JNamed {
 	
 	/**
 	 * Caching option.

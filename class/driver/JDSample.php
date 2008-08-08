@@ -72,7 +72,7 @@ class JDSample extends JDriver {
 		    $defaults = array(
 		        'name' => 'žanek',
 		    );
-		
+
 		    $form->setDefaults($defaults);
 		}
 	}

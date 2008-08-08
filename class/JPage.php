@@ -43,7 +43,7 @@ class JPage extends JDoc {
 	 * @param string $doc Filename without an extension.
 	 * @return string $default Source.
 	 */
-	private function loadTexySource($path, $doc, $default = self::PAGE_DEFAULT) {
+	protected function loadTexySource($path, $doc, $default = self::PAGE_DEFAULT) {
 		// initializations
 		$source = '';
 		$order = array(

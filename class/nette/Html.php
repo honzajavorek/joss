@@ -8,13 +8,14 @@
  * This source file is subject to the "Nette license" that is bundled
  * with this package in the file license.txt.
  *
- * For more information please see http://nettephp.com/
+ * For more information please see http://nettephp.com
  *
  * @copyright  Copyright (c) 2004, 2008 David Grudl
  * @license    http://nettephp.com/license  Nette license
- * @link       http://nettephp.com/
+ * @link       http://nettephp.com
  * @category   Nette
  * @package    Nette::Web
+ * @version    $Id: Html.php 34 2008-07-17 04:29:58Z David Grudl $
  */
 
 /*namespace Nette::Web;*/
@@ -38,7 +39,6 @@
  * @author     David Grudl
  * @copyright  Copyright (c) 2004, 2008 David Grudl
  * @package    Nette::Web
- * @version    $Revision: 18 $ $Date: 2008-06-19 08:43:05 +0200 (čt, 19 VI 2008) $
  * @property   mixed element's attributes
  */
 class Html extends /*Nette::*/Object implements /*::*/ArrayAccess, /*::*/Countable, /*::*/IteratorAggregate

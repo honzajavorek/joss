@@ -18,7 +18,7 @@
  * Classes which have a name and are identifiable by this name.
  * @package    Joss
  */
-interface JInamed {
+interface JNamed {
 	
 	/**
 	 * Decodes class name, e.g. `some-words` are converted to `JSomeWords`.

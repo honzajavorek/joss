@@ -25,7 +25,7 @@
  * @package    Joss
  * @version    $Revision$ ($Date$, $Author$)
  */
-abstract class JDriver extends JDoc implements JInamed {
+abstract class JDriver extends JPage implements JNamed {
 
 	/**
 	 * Instance of JTemplate
@@ -33,7 +33,7 @@ abstract class JDriver extends JDoc implements JInamed {
 	 * @var JTemplate
 	 */
 	protected $tpl = NULL;
-	
+
 	public function __construct($id) {
 		// template
 		if (empty($this->tpl)) {
@@ -45,36 +45,44 @@ abstract class JDriver extends JDoc implements JInamed {
 				throw new TemplateNotFoundException("Driver " . $this->getClass() . " cannot find it's template at $path.");
 			}
 		}
-		
+
 		// headers
 		$this->sendCommonHeaders();
-		
+
 		// form handling
 		$form = $this->define();
 		if (!empty($form)) {
 			$this->act($form);
 			$this->tpl->set('form', $form, FALSE);
 		}
-		
+
 		// template
 		$this->render($this->tpl);
-		print $this->tpl->fetch(); // printing output
-		
+		$tpl = $this->tpl->fetch(); // output
+
+		// Texy! source
+		$source = $this->loadTexySource(self::$paths['head'], $id)
+		. "\n\n/---html\n\n" . $tpl . "\n\n\---\n\n"
+		. $this->loadTexySource(self::$paths['foot'], $id);
+
+		$content = new JFormatter();
+		print $content->process($source); // printing output
+
 		$this->fixInternetExplorer();
 	}
 
 	/**
 	 * Define forms etc.
-	 * 
+	 *
 	 * @return Form
 	 */
 	protected function define() {
 		// Prepared to be overriden.
 	}
-	
+
 	/**
 	 * Actions, processing of form.
-	 * 
+	 *
 	 * @param Form
 	 */
 	protected function act(Form &$form) {
@@ -87,7 +95,7 @@ abstract class JDriver extends JDoc implements JInamed {
 	protected function render(JTemplate &$tpl) {
 		// Prepared to be overriden.
 	}
-	
+
 	/**
 	 * Decodes name, {{some-words}} are converted to JDSomeWords.
 	 *

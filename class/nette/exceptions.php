@@ -8,13 +8,14 @@
  * This source file is subject to the "Nette license" that is bundled
  * with this package in the file license.txt.
  *
- * For more information please see http://nettephp.com/
+ * For more information please see http://nettephp.com
  *
  * @copyright  Copyright (c) 2004, 2008 David Grudl
  * @license    http://nettephp.com/license  Nette license
- * @link       http://nettephp.com/
+ * @link       http://nettephp.com
  * @category   Nette
  * @package    Nette
+ * @version    $Id: exceptions.php 45 2008-08-08 10:46:16Z David Grudl $
  */
 
 // no namespace
@@ -25,11 +26,11 @@
 some useful SPL exception:
 
 - LogicException
-   - InvalidArgumentException
-   - LengthException
+	- InvalidArgumentException
+	- LengthException
 - RuntimeException
-   - OutOfBoundsException
-   - UnexpectedValueException
+	- OutOfBoundsException
+	- UnexpectedValueException
 
 other SPL exceptions are ambiguous; do not use them
 */
@@ -52,7 +53,7 @@ class ArgumentOutOfRangeException extends InvalidArgumentException
  * current state, method has been invoked at an illegal or inappropriate time.
  * @package    Nette
  */
-class InvalidStateException extends RuntimeException // or InvalidOperationException?
+class InvalidStateException extends RuntimeException
 {
 }
 
@@ -115,4 +116,24 @@ class FileNotFoundException extends IOException
  */
 class DirectoryNotFoundException extends IOException
 {
+}
+
+
+
+/**
+ * The exception that indicates errors that can not be recovered from. Execution of
+ * the script should be halted.
+ * @package    Nette
+ */
+class FatalErrorException extends /*Error*/Exception
+{
+
+	public function __construct($message, $code, $severity, $file, $line, $context)
+	{
+		parent::__construct($message, $code);
+		$this->file = $file;
+		$this->line = $line;
+		$this->context = $context;
+	}
+
 }
