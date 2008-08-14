@@ -100,7 +100,7 @@ final class JRouter extends Object {
 				header('Location: ' . JOSS_URL_ROOT . '/' . $this->lang->getLanguage() . '/');
 				exit();
 			} else {
-			    $_GET['lang'] = $this->lang->getLanguage();
+			    $_GET['lang'] = $this->lang->getLanguage(); // from now, everywhere globally accessible
 			}
 		}
 

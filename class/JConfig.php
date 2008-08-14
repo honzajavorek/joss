@@ -221,7 +221,7 @@ final class JConfig extends Object implements ArrayAccess, Countable, IteratorAg
 				return;
 			}
 			if ($allowIndexing) {
-				$f->content = '';
+				$f->content = 'Sitemap: http://' . $_SERVER['HTTP_HOST'] . JOSS_URL_ROOT . '/sitemap.xml';
 			} else {
 				$f->content = "User-agent: *\nDisallow: /";
 			}

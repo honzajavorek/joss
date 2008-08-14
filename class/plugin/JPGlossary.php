@@ -15,7 +15,7 @@
 
 
 /**
- * Glossary, sth like website map.
+ * Alphabetic glossary (sth like sitemap).
  *
  * @author     Jan (Honza) Javorek aka Littlemaple <honza@javorek.net>
  * @copyright  Copyright (c) 2008 Jan Javorek

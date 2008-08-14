@@ -15,14 +15,14 @@
  * @link       http://nettephp.com
  * @category   Nette
  * @package    Nette
- * @version    $Id: Debug.php 45 2008-08-08 10:46:16Z David Grudl $
+ * @version    $Id: Debug.php 50 2008-08-13 04:31:47Z David Grudl $
  */
 
 /*namespace Nette;*/
 
 
 
-// require_once dirname(__FILE__) . '/exceptions.php'; // NOTE changed! not original
+require_once dirname(__FILE__) . '/exceptions.php';
 
 // require_once dirname(__FILE__) . '/Framework.php'; // NOTE changed! not original
 
@@ -37,6 +37,9 @@
  */
 final class Debug
 {
+	/** @var array  free counters for your usage */
+	public static $counters = array();
+
 	/** @var bool  use HTML tags in error messages and dump output? */
 	public static $html; // PHP_SAPI !== 'cli'
 
@@ -65,7 +68,7 @@ final class Debug
 	private static $emailHeaders = array(
 		'To' => '',
 		'From' => 'noreply@%host%',
-		'X-Mailer' => 'Nette Framework',
+		'X-Mailer' => 'Joss Framework', // NOTE, changed! not original
 		'Subject' => 'PHP: An error occurred on the server %host%',
 		'Body' => '[%date%]',
 	);
@@ -600,6 +603,11 @@ final class Debug
 	{
 		if ($sender === 'profiler') {
 			$arr[] = 'Elapsed time: ' . sprintf('%0.3f', (microtime(TRUE) - Debug::$time) * 1000) . ' ms';
+
+			foreach ((array) self::$counters as $name => $value) {
+				if (is_array($value)) $value = implode(', ', $value);
+				$arr[] = htmlSpecialChars("Counter $name = $value");
+			}
 
 			$autoloaded = class_exists(/*Nette::Loaders::*/'AutoLoader', FALSE) ? /*Nette::Loaders::*/AutoLoader::$count : 0;
 			$s = '<span>' . count(get_included_files()) . '/' .  $autoloaded . ' files</span>, ';

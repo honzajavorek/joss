@@ -10,7 +10,7 @@
 			<item url="odkazy">Odkazy
 				<menu>
 					<item url="odkazy">Odkazy</item>
-					<item url="ukazka">Ukázka</item>
+					<item url="mapa-webu">Mapa webu</item>
 				</menu>
 			</item>
 		</menu>
@@ -21,7 +21,7 @@
 			<item url="links">Links
 				<menu>
 					<item url="links">Links</item>
-					<item url="example">Example</item>
+					<item url="sitemap">Sitemap</item>
 				</menu>
 			</item>
 		</menu>

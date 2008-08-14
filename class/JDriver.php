@@ -17,7 +17,7 @@
 /**
  * Part of application which represents special behavior of HTML page.
  *
- * Represents generated content of web page (instead of Texy! files).
+ * Represents generated content (instead of Texy! files).
  * Uses templates etc.
  *
  * @author     Jan (Honza) Javorek aka Littlemaple <honza@javorek.net>
@@ -49,16 +49,8 @@ abstract class JDriver extends JPage implements JNamed {
 		// headers
 		$this->sendCommonHeaders();
 
-		// form handling
-		$form = $this->define();
-		if (!empty($form)) {
-			$this->act($form);
-			$this->tpl->set('form', $form, FALSE);
-		}
-
 		// template
-		$this->render($this->tpl);
-		$tpl = $this->tpl->fetch(); // output
+		$tpl = $this->tpl->fetch(); // render output
 
 		// Texy! source
 		$source = $this->loadTexySource(self::$paths['head'], $id)
@@ -69,31 +61,6 @@ abstract class JDriver extends JPage implements JNamed {
 		print $content->process($source); // printing output
 
 		$this->fixInternetExplorer();
-	}
-
-	/**
-	 * Define forms etc.
-	 *
-	 * @return Form
-	 */
-	protected function define() {
-		// Prepared to be overriden.
-	}
-
-	/**
-	 * Actions, processing of form.
-	 *
-	 * @param Form
-	 */
-	protected function act(Form &$form) {
-		// Prepared to be overriden.
-	}
-
-	/**
-	 * Rendering of template.
-	 */
-	protected function render(JTemplate &$tpl) {
-		// Prepared to be overriden.
 	}
 
 	/**

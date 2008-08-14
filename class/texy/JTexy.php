@@ -111,6 +111,8 @@ class JTexy extends Texy {
 				}
 
 				return $invocation->texy->protect($string, $plugin->type);
+			} else {
+				throw new InvalidStateException("Plugin '$cmd' doesn't exist.");
 			}
 		} catch (Exception $e) {
 			// unknown identifier or error

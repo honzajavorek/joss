@@ -1,7 +1,0 @@
-Example
-#####
-
-<form action="" method="get">
-	<input type="text" name="example" />
-	<input type="submit" value="OK" />
-</form>

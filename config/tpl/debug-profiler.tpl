@@ -16,10 +16,13 @@
  * @link       http://nettephp.com
  * @category   Nette
  * @package    Nette
- * @version    $Id: profiler.phtml 43 2008-07-25 01:15:20Z David Grudl $
+ * @version    $Id: profiler.phtml 52 2008-08-14 03:52:18Z David Grudl $
  *
- * @param  array     $colophons
+ * @param      array     $colophons
+ * @return     void
  */
+
+/*namespace Nette;*/
 
 ?>
 </pre></xmp>
@@ -90,11 +93,13 @@ document.getElementById('netteProfiler').onmousedown = function(e) {
 		e = e || event;
 		thisObj.style.left = (e.clientX - thisObj.mouseX + thisObj.posX) + "px";
 		thisObj.style.top = (e.clientY - thisObj.mouseY + thisObj.posY) + "px";
+		return false;
 	};
 
 	document.documentElement.onmouseup = function(e) {
 		document.documentElement.onmousemove = null;
 		document.documentElement.onmouseup = null;
+		return false;
 	};
 };
 /* ]]> */

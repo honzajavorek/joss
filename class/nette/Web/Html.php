@@ -15,13 +15,14 @@
  * @link       http://nettephp.com
  * @category   Nette
  * @package    Nette::Web
- * @version    $Id: Html.php 34 2008-07-17 04:29:58Z David Grudl $
+ * @version    $Id: Html.php 47 2008-08-08 17:34:34Z David Grudl $
  */
 
 /*namespace Nette::Web;*/
 
 
-// require_once dirname(__FILE__) . '/../Object.php'; // NOTE changed! not original
+
+require_once dirname(__FILE__) . '/../Object.php';
 
 
 
@@ -53,10 +54,7 @@ class Html extends /*Nette::*/Object implements /*::*/ArrayAccess, /*::*/Countab
 	public $attrs = array();
 
 	/** @var array  of Html | string nodes */
-	private $children = array();
-
-	/** @var Html parent element */
-	private $parent;
+	protected $children = array();
 
 	/** @var bool  use XHTML syntax? */
 	public static $xhtml = TRUE;
@@ -75,7 +73,7 @@ class Html extends /*Nette::*/Object implements /*::*/ArrayAccess, /*::*/Countab
 	 */
 	public static function el($name = NULL, $attrs = NULL)
 	{
-		$el = new self;
+		$el = new /**/self/**/ /*static*/;
 		$el->setName($name);
 		if (is_array($attrs)) {
 			$el->attrs = $attrs;
@@ -155,6 +153,18 @@ class Html extends /*Nette::*/Object implements /*::*/ArrayAccess, /*::*/Countab
 
 
 	/**
+	 * Overloaded unsetter for element's attribute.
+	 * @param  string    property name
+	 * @return void
+	 */
+	final public function __unset($name)
+	{
+		unset($this->attrs[$name]);
+	}
+
+
+
+	/**
 	 * Overloaded setter for element's attribute.
 	 * @param  string attribute name
 	 * @param  array value
@@ -162,6 +172,9 @@ class Html extends /*Nette::*/Object implements /*::*/ArrayAccess, /*::*/Countab
 	 */
 	final public function __call($m, $args)
 	{
+		if (count($args) !== 1) {
+			throw new /*::*/InvalidArgumentException("Just one argument is required.");
+		}
 		$this->attrs[$m] = $args[0];
 		return $this;
 	}
@@ -205,7 +218,8 @@ class Html extends /*Nette::*/Object implements /*::*/ArrayAccess, /*::*/Countab
 			$text = str_replace(array('&', '<', '>'), array('&amp;', '&lt;', '&gt;'), $text);
 		}
 
-		$this->children = array($text);
+		$this->removeChildren();
+		$this->children[] = $text;
 		return $this;
 	}
 
@@ -261,24 +275,18 @@ class Html extends /*Nette::*/Object implements /*::*/ArrayAccess, /*::*/Countab
 	 * @return Html  provides a fluent interface
 	 * @throws Exception
 	 */
-	final public function insert($index, $child, $replace = FALSE)
+	public function insert($index, $child, $replace = FALSE)
 	{
-		if ($child instanceof Html) {
-			if ($child->parent !== NULL) {
-				throw new /*::*/InvalidStateException('Child node already has parent.');
+		if ($child instanceof Html || is_string($child)) {
+			if ($index === NULL)  { // append
+				$this->children[] = $child;
+
+			} else { // insert or replace
+				array_splice($this->children, (int) $index, $replace ? 1 : 0, array($child));
 			}
-			//TODO: makes garbage collector life harder
-			//$child->parent = $this;
 
-		} elseif (!is_string($child)) {
+		} else {
 			throw new /*::*/InvalidArgumentException('Child node must be scalar or Html object.');
-		}
-
-		if ($index === NULL)  { // append
-			$this->children[] = $child;
-
-		} else { // insert or replace
-			array_splice($this->children, (int) $index, $replace ? 1 : 0, array($child));
 		}
 
 		return $this;
@@ -328,12 +336,10 @@ class Html extends /*Nette::*/Object implements /*::*/ArrayAccess, /*::*/Countab
 	 * @param  int index
 	 * @return void
 	 */
-	final public function offsetUnset($index)
+	public function offsetUnset($index)
 	{
 		if (isset($this->children[$index])) {
-			$child = $this->children[$index];
 			array_splice($this->children, (int) $index, 1);
-			$child->parent = NULL;
 		}
 	}
 
@@ -351,12 +357,31 @@ class Html extends /*Nette::*/Object implements /*::*/ArrayAccess, /*::*/Countab
 
 
 	/**
-	 * Required by the ::IteratorAggregate interface.
-	 * @return ::ArrayIterator
+	 * Removed all children.
+	 * @return void
 	 */
-	final public function getIterator()
+	public function removeChildren()
 	{
-		return new /*::*/ArrayIterator($this->children);
+		$this->children = array();
+	}
+
+
+
+	/**
+	 * Iterates over a elements.
+	 * @param  bool    recursive?
+	 * @param  string  class types filter
+	 * @return ::RecursiveIterator
+	 */
+	final public function getIterator($deep = FALSE)
+	{
+		if ($deep) {
+			$deep = $deep > 0 ? /*::*/RecursiveIteratorIterator::SELF_FIRST : /*::*/RecursiveIteratorIterator::CHILD_FIRST;
+			return new /*::*/RecursiveIteratorIterator(new RecursiveHtmlIterator($this->children), $deep);
+
+		} else {
+			return new RecursiveHtmlIterator($this->children);
+		}
 	}
 
 
@@ -368,17 +393,6 @@ class Html extends /*Nette::*/Object implements /*::*/ArrayAccess, /*::*/Countab
 	final public function getChildren()
 	{
 		return $this->children;
-	}
-
-
-
-	/**
-	 * Returns parent node.
-	 * @return Html
-	 */
-	final public function getParent()
-	{
-		return $this->parent;
 	}
 
 
@@ -496,14 +510,39 @@ class Html extends /*Nette::*/Object implements /*::*/ArrayAccess, /*::*/Countab
 	/**
 	 * Clones all children too.
 	 */
-	final public function __clone()
+	public function __clone()
 	{
-		$this->parent = NULL;
 		foreach ($this->children as $key => $value) {
 			if (is_object($value)) {
 				$this->children[$key] = clone $value;
 			}
 		}
+	}
+
+}
+
+
+
+
+
+
+/**
+ * Recursive HTML element iterator. See Html::getIterator().
+ *
+ * @author     David Grudl
+ * @copyright  Copyright (c) 2004, 2008 David Grudl
+ * @package    Nette::Web
+ */
+class RecursiveHtmlIterator extends /*::*/RecursiveArrayIterator
+{
+
+	/**
+	 * The sub-iterator for the current element.
+	 * @return ::RecursiveIterator
+	 */
+	public function getChildren()
+	{
+		return $this->current()->getIterator();
 	}
 
 }

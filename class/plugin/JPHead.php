@@ -265,6 +265,18 @@ class JPHead extends JPlugin {
 		return $output;
 	}
 	
+	/**
+	 * Generates TITLE of page.
+	 *
+	 * @return string
+	 */
+	private function getTitle() {
+		if ($_GET['doc'] == 'index') {
+			return $this->config['title'];
+		}
+		return $this->texy->headingModule->title . ' - ' . $this->config['title'];
+	}
+	
 	public function process() {
 		if (!$this->tpl instanceof JTemplate) {
 			throw new FileNotFoundException('JPHead.tpl template file not found.');
@@ -303,7 +315,7 @@ class JPHead extends JPlugin {
 		}
 		
 		// title
-		$title = Html::el('title')->setText((string)$this->texy->headingModule->title . ' - ' . $this->config['title']);
+		$title = Html::el('title')->setText($this->getTitle());
 		$output['title'] = "\t" . $title->__toString() . "\n";
 		
 		// fetch

@@ -124,7 +124,8 @@ class JPMenu extends JPlugin {
 			throw new InvalidStateException('Menu in desired language or menu item not found.');
 		}
 
-		return $this->drawMenu($this->args[0], $menu, $path);
+		$level = (empty($this->args[0]))? 0 : $this->args[0];
+		return $this->drawMenu($level, $menu, $path);
 	}
 
 }
