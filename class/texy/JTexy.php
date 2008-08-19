@@ -34,7 +34,7 @@ class JTexy extends Texy {
 	function __construct() {
 		parent::__construct();
 		$config = JConfig::getInstance();
-		$cached = (bool)$config['cached'];
+		$this->cached = (bool)$config['cached'];
 
 		$this->setOutputMode(($config['xhtml'])? Texy::XHTML1_TRANSITIONAL : Texy::HTML4_STRICT);
 		Html::$xhtml = $config['xhtml'];

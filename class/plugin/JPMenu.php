@@ -48,7 +48,7 @@ class JPMenu extends JPlugin {
 	private function findPage($id, SimpleXMLElement $menu) {
 		$path = array();
 		foreach ($menu->item as $item) {
-			$url = (string)$item['url'];
+			$url = (empty($item['url']))? Texy::webalize((string)$item) : trim($item['url']);
 			if (isset($item->menu)) { // submenu
 				$path = $this->findPage($id, $item->menu);
 				if (!empty($path)) {
@@ -89,9 +89,10 @@ class JPMenu extends JPlugin {
 		// creating items
 		$html = Html::el('menu')->class("menu-level-$level");
 		foreach ($menu->item as $item) {
-			$url = $lang . $item['url'];
+			$originalUrl = (empty($item['url']))? Texy::webalize((string)$item) : trim($item['url']);
+			$url = $lang . $originalUrl;
 
-			$class = (isset($path[$level]) && $item['url'] == $path[$level])? 'active' : NULL;
+			$class = (isset($path[$level]) && $originalUrl == $path[$level])? 'active' : NULL;
 			$link = JRouter::url($url);
 
 			$text = (string)$item;

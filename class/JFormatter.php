@@ -169,7 +169,7 @@ final class JFormatter extends Object {
 		// replacements
 		$html = preg_replace(array(
 
-		'~(?<=[^-]){{([^}:]+)(:[^}]+)?}}(?=[^-])~', // to hide buggy plugins
+		'~(?<!-){{([^}:]+)(:[^}]+)?}}(?!-)~', // to hide buggy plugins
 		'~<!-- by Texy[^!]*! -->~iu',
 		'~<body([^>]*)>~iu',
 		'~</html>~iu',

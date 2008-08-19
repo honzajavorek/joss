@@ -37,9 +37,10 @@ class JPSitemap extends JPlugin {
 		$dir = Html::el('dir');
 		
 		foreach ($level->item as $item) {
-			$url = ($item['url'] == 'index')? '' : $item['url'];
+			$url = (empty($item['url']))? Texy::webalize((string)$item) : $item['url'];
+			$url = JRouter::url($url);
 			$li = Html::el('li')->add(
-				Html::el('a')->href(JOSS_URL_ROOT . "$lang/$url")->setText(trim((string)$item))
+				Html::el('a')->href(JOSS_URL_ROOT . "$lang$url")->setText(trim((string)$item))
 			);
 			if (isset($item->menu)) {
 				$li->add($this->getLevel($item->menu));
