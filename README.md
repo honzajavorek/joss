@@ -83,8 +83,6 @@ Joss je svobodný program. Můžeš ho zdarma stáhnout, libovolně upravovat a 
 
 ### Obsah dokumentace
 
-Pozor! Dokumentace se vztahuje k verzi, která je momentálně v SVN repository. Tato verze se může (a pravděpodobně bude) lišit od verze, která je zrovna oficiálně ke stažení
-
 - Vlastnosti
 - Instalace
 - Struktura
@@ -95,7 +93,7 @@ Pozor! Dokumentace se vztahuje k verzi, která je momentálně v SVN repository.
 Joss je _ultralight mezi frameworky_ a jednou možná i redakčními systémy v PHP. Jeho výhodou je to, že skoro nic neumí :) . Umí přesně jednu jednoduchou věc, ale pořádně. Nevystavíš nad ním sice tedy portál s fotogalerií, fórem a blogem, ale web o pěti stránkách s ním zvládneš sakramentsky rychle.
 
 ### Hlavní vlastnosti
-Hlavní vlastnosti a rysy Jossu najdeš v [http://blog.javorek.net/ultralight-mezi-php-frameworky-joss/ tomto článku na mém blogu].
+Hlavní vlastnosti a rysy Jossu najdeš v [tomto článku na mém blogu][joss-intro].
 
 - umožňuje **bleskové vytvoření malých a středních webů** bez klikací uživatelské administrace
 - framework **lze pochopit asi za hodinu** čtení dokumentace a hrátek s kódem
@@ -107,7 +105,7 @@ Hlavní vlastnosti a rysy Jossu najdeš v [http://blog.javorek.net/ultralight-me
 - **hierarchická menu**
 - více **jazykových verzí** webu
 - cache zvyšuje **rychlost aplikace**
-- obsahuje jednoduchý *RSS agregátor**
+- obsahuje jednoduchý **RSS agregátor**
 - **automatické** generování `sitemap.xml`, `robots.txt`, ...
 
 ### Na okraj
@@ -307,6 +305,7 @@ Ukázka pluginu zjednodušujícího vložení JavaScriptového kódu měřidla n
 
 ### Verze
 Např. _Joss 1.0.1_ :-)
+
 - **první číslo** - velké změny
 - **druhé číslo** - přidaná funkčnost apod., dílčí změny
 - **třetí číslo** - opravy chyb
@@ -325,3 +324,4 @@ Např. _Joss 1.0.1_ :-)
 [ga]: http://www.google.com/analytics/
 [csfd]: http://www.csfd.cz
 [texy-syntax]: http://texy.info/cs/syntax-podrobne
+[joss-intro]: http://blog.javorek.net/ultralight-mezi-php-frameworky-joss/
