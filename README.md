@@ -23,7 +23,7 @@ This work is licensed under [ISC license](https://en.wikipedia.org/wiki/ISC_lice
 ----
 
 
-# Joss (česky)
+# Joss (in Czech)
 
 Joss je jednoduchý webový program, díky němuž si můžeš velmi snadno **tvořit a spravovat své vlastní stránky**. Přehnaně inteligentní lidé tomu říkají framework, RS (redakční systém) nebo CMS (content management system, systém pro správu obsahu).
 
