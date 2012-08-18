@@ -1,4 +1,3 @@
-
 # Joss
 
 Joss is a simple web-based program, which allows you to **create and administrate your own website** in a very, very simple and easy way. Too intelligent people calls it CMS (content management system) or framework.
@@ -15,7 +14,7 @@ I wrote [pretty verbose documentation in Czech](https://github.com/honzajavorek/
 ## License: ISC
 
 © 2008 Jan Javorek Jan Javorek &lt;<a
-href="mailto:jan.javorek&#64;gmail.com">jan.javorek&#64;<!---->gmail.com</a>&gt;
+href="mailto:jan.javorek&#64;gmail.com">jan.javorek&#64;gmail.com</a>&gt;
 
 This work is licensed under [ISC license](https://en.wikipedia.org/wiki/ISC_license).
 
@@ -47,6 +46,6 @@ Napsal jsem (v roce 2008) k Jossu poměrně [rozsáhlou dokumentaci v češtině
 ## Licence: ISC
 
 © 2008 Jan Javorek Jan Javorek &lt;<a
-href="mailto:jan.javorek&#64;gmail.com">jan.javorek&#64;<!---->gmail.com</a>&gt;
+href="mailto:jan.javorek&#64;gmail.com">jan.javorek&#64;gmail.com</a>&gt;
 
 Toto dílo podléhá licenci [ISC](https://en.wikipedia.org/wiki/ISC_license).
