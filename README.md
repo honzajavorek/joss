@@ -13,7 +13,7 @@ I wrote [pretty verbose documentation in Czech](https://github.com/honzajavorek/
 
 ## License: ISC
 
-© 2008 Jan Javorek Jan Javorek &lt;<a
+© 2008 Jan Javorek &lt;<a
 href="mailto:jan.javorek&#64;gmail.com">jan.javorek&#64;gmail.com</a>&gt;
 
 This work is licensed under [ISC license](https://en.wikipedia.org/wiki/ISC_license).
@@ -45,7 +45,7 @@ Napsal jsem (v roce 2008) k Jossu poměrně [rozsáhlou dokumentaci v češtině
 
 ## Licence: ISC
 
-© 2008 Jan Javorek Jan Javorek &lt;<a
+© 2008 Jan Javorek &lt;<a
 href="mailto:jan.javorek&#64;gmail.com">jan.javorek&#64;gmail.com</a>&gt;
 
 Toto dílo podléhá licenci [ISC](https://en.wikipedia.org/wiki/ISC_license).
