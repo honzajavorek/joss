@@ -2,11 +2,6 @@
 
 Joss is a simple web-based program, which allows you to **create and administrate your own website** in a very, very simple and easy way. Too intelligent people calls it CMS (content management system) or framework.
 
-## Status: IDLE
-
-This my hobby project is idle since 2008. [No future, no future for me!](https://www.youtube.com/watch?v=yqrAPOZxgzU) However, current version works fine. If you are interested in programming Joss, [fork it](https://github.com/honzajavorek/joss/fork)!
-
-
 ## Documentation
 
 I wrote [pretty verbose documentation in Czech](https://github.com/honzajavorek/joss/blob/master/doc/czech.md). Only [some pieces](https://github.com/honzajavorek/joss/blob/master/doc/english.md) are translated to English.
